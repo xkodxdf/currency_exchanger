@@ -3,29 +3,19 @@ package com.xkodxdf.app;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Properties;
 
 public class ConnectionProvider {
-
-    private final Properties properties;
 
     static {
         loadDriver();
     }
 
-    public ConnectionProvider(Properties properties) {
-        this.properties = properties;
-    }
-
     public Connection get() {
-        String url = "db.url";
-        String user = "db.user";
-        String password = "db.password";
         try {
             return DriverManager.getConnection(
-                    properties.getProperty(url),
-                    properties.getProperty(user),
-                    properties.getProperty(password)
+                    PropertiesUtil.getProperty(PropertiesUtil.Keys.DB_URL),
+                    PropertiesUtil.getProperty(PropertiesUtil.Keys.DB_USER),
+                    PropertiesUtil.getProperty(PropertiesUtil.Keys.DB_PASSWORD)
             );
         } catch (SQLException e) {
             throw new RuntimeException(e);

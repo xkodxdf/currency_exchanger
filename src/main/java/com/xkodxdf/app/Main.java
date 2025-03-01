@@ -1,19 +1,15 @@
 package com.xkodxdf.app;
 
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.*;
-import java.util.Properties;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class Main {
 
     public static void main(String[] args) {
-        Properties properties = new Properties();
-        setProperties(properties);
-        ConnectionProvider connectionProvider = new ConnectionProvider(properties);
+        ConnectionProvider connectionProvider = new ConnectionProvider();
         try (Connection connection = connectionProvider.get()) {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(
@@ -28,18 +24,6 @@ public class Main {
                 stringBuilder.setLength(0);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static void setProperties(Properties properties) {
-        String path = "src/main/resources/exchanger.properties";
-        try (InputStream propFile = new FileInputStream(
-                System.getProperty("user.dir")
-                        + File.separator
-                        + path)) {
-            properties.load(propFile);
-        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
