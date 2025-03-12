@@ -14,9 +14,8 @@ $(document).ready(function () {
                     row.append($('<td></td>').text(currency.code));
                     row.append($('<td></td>').text(currency.name));
                     row.append($('<td></td>').text(currency.sign));
-                    //delete button
                     const deleteButton = $('<button></button>')
-                        .text('🇽')
+                        .text('x')
                         .addClass('btn btn-sm delete-currency')
                         .attr('data-code', currency.code);
                     row.append($('<td></td>').append(deleteButton));
@@ -45,7 +44,7 @@ $(document).ready(function () {
 
                 const newRateBaseCurrency = $("#new-rate-base-currency");
                 newRateBaseCurrency.empty();
-                newRateBaseCurrency.append('<option value="" disabled selected>Select base currency</option>'); // Плейсхолдер
+                newRateBaseCurrency.append('<option value="" disabled selected>Select base currency</option>');
 
                 $.each(data, function (index, currency) {
                     newRateBaseCurrency.append(`<option value="${currency.code}">${currency.code}</option>`);
@@ -53,7 +52,7 @@ $(document).ready(function () {
 
                 const newRateTargetCurrency = $("#new-rate-target-currency");
                 newRateTargetCurrency.empty();
-                newRateTargetCurrency.append('<option value="" disabled selected>Select target currency</option>'); // Плейсхолдер
+                newRateTargetCurrency.append('<option value="" disabled selected>Select target currency</option>');
 
                 $.each(data, function (index, currency) {
                     newRateTargetCurrency.append(`<option value="${currency.code}">${currency.code}</option>`);
@@ -61,15 +60,14 @@ $(document).ready(function () {
 
                 const convertBaseCurrency = $("#convert-base-currency");
                 convertBaseCurrency.empty();
-                convertBaseCurrency.append('<option value="" disabled selected>Select base currency</option>'); // Плейсхолдер
-
+                convertBaseCurrency.append('<option value="" disabled selected>Select base currency</option>');
                 $.each(data, function (index, currency) {
                     convertBaseCurrency.append(`<option value="${currency.code}">${currency.code}</option>`);
                 });
 
                 const convertTargetCurrency = $("#convert-target-currency");
                 convertTargetCurrency.empty();
-                convertTargetCurrency.append('<option value="" disabled selected>Select target currency</option>'); // Плейсхолдер
+                convertTargetCurrency.append('<option value="" disabled selected>Select target currency</option>');
 
                 $.each(data, function (index, currency) {
                     convertTargetCurrency.append(`<option value="${currency.code}">${currency.code}</option>`);
@@ -146,7 +144,6 @@ $(document).ready(function () {
         const pair = $(this).closest('tr').find('td:first').text();
         const exchangeRate = $(this).closest('tr').find('td:eq(1)').text();
 
-        // insert values into the modal
         $('#edit-exchange-rate-modal .modal-title').text(`Edit ${pair} Exchange Rate`);
         $('#edit-exchange-rate-modal #exchange-rate-input').val(exchangeRate);
     });
@@ -195,14 +192,13 @@ $(document).ready(function () {
     });
 
     $(document).ready(function () {
-        // Функция для проверки одинаковых валют
         function validateCurrencySelection(baseSelector, targetSelector, errorMessage) {
             const baseCurrency = $(baseSelector).val();
             const targetCurrency = $(targetSelector).val();
 
             if (baseCurrency && targetCurrency && baseCurrency === targetCurrency) {
                 alert(errorMessage);
-                $(targetSelector).val(''); // Сбрасываем выбор целевой валюты
+                $(targetSelector).val('');
                 return false;
             }
             return true;
@@ -216,7 +212,6 @@ $(document).ready(function () {
             );
         });
 
-        // Обработчик для выпадающих списков в блоке конвертера
         $('#convert-base-currency, #convert-target-currency').change(function () {
             validateCurrencySelection(
                 '#convert-base-currency',
