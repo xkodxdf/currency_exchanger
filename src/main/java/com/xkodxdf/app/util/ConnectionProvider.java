@@ -1,16 +1,18 @@
-package com.xkodxdf.app;
+package com.xkodxdf.app.util;
+
+import com.xkodxdf.app.exception.CurrencyExchangerException;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class ConnectionProvider {
+public final class ConnectionProvider {
 
     static {
         loadDriver();
     }
 
-    public Connection get() {
+    public static Connection get() {
         try {
             return DriverManager.getConnection(
                     PropertiesUtil.getProperty(PropertiesUtil.Keys.DB_URL),
@@ -18,7 +20,7 @@ public class ConnectionProvider {
                     PropertiesUtil.getProperty(PropertiesUtil.Keys.DB_PASSWORD)
             );
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new CurrencyExchangerException(e);
         }
     }
 
@@ -26,7 +28,7 @@ public class ConnectionProvider {
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            throw new CurrencyExchangerException(e);
         }
     }
 }

@@ -365,9 +365,20 @@ select {
 
 select {
   word-wrap: normal;
+  color: #000;
 }
+
+select option[disabled] {
+  color: #999;
+}
+
+select:invalid {
+  color: #999;
+}
+
 select:disabled {
   opacity: 1;
+  color: #999;
 }
 
 [list]:not([type=date]):not([type=datetime-local]):not([type=month]):not([type=week]):not([type=time])::-webkit-calendar-picker-indicator {

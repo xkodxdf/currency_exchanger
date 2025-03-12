@@ -1,4 +1,6 @@
-package com.xkodxdf.app;
+package com.xkodxdf.app.util;
+
+import com.xkodxdf.app.exception.CurrencyExchangerException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,7 +30,7 @@ public final class PropertiesUtil {
         try (InputStream inputStream = PropertiesUtil.class.getClassLoader().getResourceAsStream(fileName)) {
             PROPERTIES.load(inputStream);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new CurrencyExchangerException(e);
         }
     }
 
