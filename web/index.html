@@ -40,17 +40,17 @@
                     <div class="form-group mt-3">
                         <label for="add-currency-code">Code</label>
                         <input type="text" name="code" placeholder="USD"
-                               class="form-control form-control-sm currency-code" id="add-currency-code">
+                               class="form-control form-control-sm currency-code" id="add-currency-code" required>
                     </div>
                     <div class="form-group mt-3">
                         <label for="add-currency-name">Name</label>
                         <input type="text" name="name" placeholder="US Dollar" class="form-control form-control-sm"
-                               id="add-currency-name">
+                               id="add-currency-name" required>
                     </div>
                     <div class="form-group mt-3">
                         <label for="add-currency-sign">Sign</label>
                         <input type="text" name="sign" placeholder="$" class="form-control form-control-sm"
-                               id="add-currency-sign">
+                               id="add-currency-sign" required>
                     </div>
                     <button type="submit" class="btn btn-primary btn-sm mt-4">Add Currency</button>
                 </form>
@@ -125,7 +125,7 @@
                     </div>
                     <div class="form-group mt-3">
                         <label for="exchange-rate">Exchange Rate</label>
-                        <input type="text" placeholder="1.23" class="form-control" name="rate" id="exchange-rate">
+                        <input type="text" placeholder="1.23" class="form-control" name="rate" id="exchange-rate" required>
                     </div>
                     <button type="submit" class="btn btn-primary mt-3">Add Exchange Rate</button>
                     <!--swap-->
@@ -151,7 +151,7 @@
                         <div class="col-6">
                             <div class="form-group mt-3">
                                 <label for="convert-amount">Amount</label>
-                                <input placeholder="1.23" type="text" class="form-control" id="convert-amount">
+                                <input placeholder="1.23" type="text" class="form-control" id="convert-amount" required>
                             </div>
                         </div>
                         <div class="col-6">
