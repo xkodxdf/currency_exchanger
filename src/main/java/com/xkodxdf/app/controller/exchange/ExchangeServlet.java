@@ -1,7 +1,9 @@
 package com.xkodxdf.app.controller.exchange;
 
 import com.google.gson.Gson;
-import com.xkodxdf.app.model.entity.ExchangeEntity;
+import com.xkodxdf.app.model.dto.ExchangeRateRequestDto;
+import com.xkodxdf.app.model.dto.ExchangeRequestDto;
+import com.xkodxdf.app.model.dto.ExchangeResponseDto;
 import com.xkodxdf.app.model.service.ExchangeService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -10,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 
 @WebServlet("/exchange")
 public class ExchangeServlet extends HttpServlet {
@@ -23,9 +26,11 @@ public class ExchangeServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
         String baseCurrencyCode = req.getParameter("from");
         String targetCurrencyCode = req.getParameter("to");
-        String amount = req.getParameter("amount");
-        ExchangeEntity exchangeEntity = exchangeService.getExchangeEntity(baseCurrencyCode + targetCurrencyCode,
-                amount);
+        String amountString = req.getParameter("amount");
+        BigDecimal amount = new BigDecimal(amountString);
+        ExchangeResponseDto exchangeEntity = exchangeService.getExchangeEntity(
+                new ExchangeRequestDto(new ExchangeRateRequestDto(baseCurrencyCode, targetCurrencyCode), amount)
+        );
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.getWriter().write(gson.toJson(exchangeEntity));
     }

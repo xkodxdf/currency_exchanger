@@ -2,7 +2,8 @@ package com.xkodxdf.app.controller.exchange_rate;
 
 import com.google.gson.Gson;
 import com.xkodxdf.app.exception.CurrencyExchangerException;
-import com.xkodxdf.app.model.entity.ExchangeRateEntity;
+import com.xkodxdf.app.model.dto.ExchangeRateRequestDto;
+import com.xkodxdf.app.model.dto.ExchangeRateResponseDto;
 import com.xkodxdf.app.model.service.ExchangeRateService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -26,7 +27,8 @@ public class ExchangeRateServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
         int excludeSlashSubstringIndex = 1;
         String codes = req.getPathInfo().substring(excludeSlashSubstringIndex);
-        ExchangeRateEntity exchangeRate = exchangeRateService.get(codes);
+        ExchangeRateResponseDto exchangeRate = exchangeRateService.get(
+                new ExchangeRateRequestDto(getBaseCurrencyCode(codes), getTargetCurrencyCode(codes)));
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.getWriter().write(gson.toJson(exchangeRate));
     }
@@ -47,7 +49,8 @@ public class ExchangeRateServlet extends HttpServlet {
         int excludeSlashSubstringIndex = 1;
         String codes = req.getPathInfo().substring(excludeSlashSubstringIndex);
         BigDecimal newRate = new BigDecimal(getNewRateString(req));
-        ExchangeRateEntity updatedExchangeRate =  exchangeRateService.update(codes, newRate);
+        ExchangeRateResponseDto updatedExchangeRate =  exchangeRateService.update(
+                new ExchangeRateRequestDto(getBaseCurrencyCode(codes), getTargetCurrencyCode(codes), newRate));
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.getWriter().write(gson.toJson(updatedExchangeRate));
     }
@@ -70,5 +73,13 @@ public class ExchangeRateServlet extends HttpServlet {
             throw new CurrencyExchangerException();
         }
         return newRateString;
+    }
+
+    private String getBaseCurrencyCode(String codePair) {
+        return codePair.substring(0, 3);
+    }
+
+    private String getTargetCurrencyCode(String codePair) {
+        return codePair.substring(3);
     }
 }

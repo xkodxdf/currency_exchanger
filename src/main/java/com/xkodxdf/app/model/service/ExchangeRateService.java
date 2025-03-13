@@ -1,10 +1,10 @@
 package com.xkodxdf.app.model.service;
 
 import com.xkodxdf.app.model.dao.ExchangeRateDaoImpl;
-import com.xkodxdf.app.model.dto.ExchangeRateDto;
+import com.xkodxdf.app.model.dto.ExchangeRateRequestDto;
+import com.xkodxdf.app.model.dto.ExchangeRateResponseDto;
 import com.xkodxdf.app.model.entity.ExchangeRateEntity;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public final class ExchangeRateService {
@@ -23,28 +23,26 @@ public final class ExchangeRateService {
         return INSTANCE;
     }
 
-    public ExchangeRateEntity save(String codes, BigDecimal rate) {
-        return exchangeRateDao.save(new ExchangeRateDto(getBaseCurrencyCode(codes), getTargetCurrencyCode(codes), rate));
+    public ExchangeRateResponseDto save(ExchangeRateRequestDto requestDto) {
+        ExchangeRateEntity exchangeRateEntity = exchangeRateDao.save(requestDto);
+        return new ExchangeRateResponseDto(exchangeRateEntity);
     }
 
-    public ExchangeRateEntity get(String codes) {
-        return exchangeRateDao.get(new ExchangeRateDto(getBaseCurrencyCode(codes), getTargetCurrencyCode(codes), null));
+    public ExchangeRateResponseDto get(ExchangeRateRequestDto requestDto) {
+        ExchangeRateEntity exchangeRateEntity = exchangeRateDao.get(requestDto);
+        return new ExchangeRateResponseDto(exchangeRateEntity);
     }
 
-    public ExchangeRateEntity update(String codes, BigDecimal newRate) {
-        return exchangeRateDao.update(new ExchangeRateDto(getBaseCurrencyCode(codes), getTargetCurrencyCode(codes), newRate));
+    public ExchangeRateResponseDto update(ExchangeRateRequestDto requestDto) {
+        ExchangeRateEntity exchangeRateEntity = exchangeRateDao.update(requestDto);
+        return new ExchangeRateResponseDto(exchangeRateEntity);
     }
 
-    public List<ExchangeRateEntity> getAll() {
-        return exchangeRateDao.getAll();
+    public List<ExchangeRateResponseDto> getAll() {
+        return exchangeRateDao.getAll().stream()
+                .map(ExchangeRateResponseDto::new)
+                .toList();
     }
 
-    private String getBaseCurrencyCode(String codePair) {
-        return codePair.substring(0, 3);
-    }
-
-    private String getTargetCurrencyCode(String codePair) {
-        return codePair.substring(3);
-    }
 }
 

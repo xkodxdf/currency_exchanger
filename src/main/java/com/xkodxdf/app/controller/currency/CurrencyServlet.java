@@ -1,7 +1,8 @@
 package com.xkodxdf.app.controller.currency;
 
 import com.google.gson.Gson;
-import com.xkodxdf.app.model.entity.CurrencyEntity;
+import com.xkodxdf.app.model.dto.CurrencyRequestDto;
+import com.xkodxdf.app.model.dto.CurrencyResponseDto;
 import com.xkodxdf.app.model.service.CurrencyService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -23,7 +24,7 @@ public class CurrencyServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
         int excludeSlashSubstringIndex = 1;
         String code = req.getPathInfo().substring(excludeSlashSubstringIndex);
-        CurrencyEntity currency = currencyService.get(code);
+        CurrencyResponseDto currency = currencyService.get(new CurrencyRequestDto(code));
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.getWriter().write(gson.toJson(currency));
     }
@@ -34,7 +35,7 @@ public class CurrencyServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
         int excludeSlashSubstringIndex = 1;
         String code = req.getPathInfo().substring(excludeSlashSubstringIndex);
-        CurrencyEntity deletedCurrency = currencyService.delete(code);
+        CurrencyResponseDto deletedCurrency = currencyService.delete(new CurrencyRequestDto(code));
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.getWriter().write(gson.toJson(deletedCurrency));
     }

@@ -3,6 +3,7 @@ package com.xkodxdf.app.model.dao;
 
 import com.xkodxdf.app.exception.CurrencyExchangerException;
 import com.xkodxdf.app.model.dao.interfaces.CurrencyDao;
+import com.xkodxdf.app.model.dto.CurrencyRequestDto;
 import com.xkodxdf.app.model.entity.CurrencyEntity;
 import com.xkodxdf.app.util.ConnectionProvider;
 
@@ -10,7 +11,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CurrencyDaoImpl implements CurrencyDao<String, CurrencyEntity> {
+public class CurrencyDaoImpl implements CurrencyDao<CurrencyRequestDto, CurrencyEntity> {
 
     private static final String ID_COLUMN_LABEL = "id";
     private static final String SIGN_COLUMN_LABEL = "sign";
@@ -50,27 +51,27 @@ public class CurrencyDaoImpl implements CurrencyDao<String, CurrencyEntity> {
     }
 
     @Override
-    public CurrencyEntity save(CurrencyEntity currency) {
+    public CurrencyEntity save(CurrencyRequestDto requestDto) {
         try (Connection connection = ConnectionProvider.get();
              PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setString(1, currency.getSign());
-            preparedStatement.setString(2, currency.getCode());
-            preparedStatement.setString(3, currency.getName());
+            preparedStatement.setString(1, requestDto.sign());
+            preparedStatement.setString(2, requestDto.code());
+            preparedStatement.setString(3, requestDto.name());
             preparedStatement.executeUpdate();
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
             generatedKeys.next();
-            currency.setId(generatedKeys.getLong(ID_COLUMN_LABEL));
-            return currency;
+            long currencyId = generatedKeys.getLong(ID_COLUMN_LABEL);
+            return new CurrencyEntity(currencyId, requestDto);
         } catch (SQLException e) {
             throw new CurrencyExchangerException(e);
         }
     }
 
     @Override
-    public CurrencyEntity get(String code) {
+    public CurrencyEntity get(CurrencyRequestDto requestDto) {
         try (Connection connection = ConnectionProvider.get();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_BY_CODE_SQL)) {
-            preparedStatement.setString(1, code);
+            preparedStatement.setString(1, requestDto.code());
             ResultSet resultSet = preparedStatement.executeQuery();
             if (!resultSet.next()) {
                 throw new CurrencyExchangerException();
@@ -82,11 +83,11 @@ public class CurrencyDaoImpl implements CurrencyDao<String, CurrencyEntity> {
     }
 
     @Override
-    public CurrencyEntity delete(String code) {
+    public CurrencyEntity delete(CurrencyRequestDto requestDto) {
         try (Connection connection = ConnectionProvider.get();
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_BY_CODE_SQL)) {
-            preparedStatement.setString(1, code);
-            CurrencyEntity currencyToDelete = get(code);
+            preparedStatement.setString(1, requestDto.code());
+            CurrencyEntity currencyToDelete = get(requestDto);
             if (preparedStatement.executeUpdate() == 0) {
                 throw new CurrencyExchangerException();
             }

@@ -2,7 +2,7 @@ package com.xkodxdf.app.model.dao;
 
 import com.xkodxdf.app.exception.CurrencyExchangerException;
 import com.xkodxdf.app.model.dao.interfaces.ExchangeRateDao;
-import com.xkodxdf.app.model.dto.ExchangeRateDto;
+import com.xkodxdf.app.model.dto.ExchangeRateRequestDto;
 import com.xkodxdf.app.model.entity.CurrencyEntity;
 import com.xkodxdf.app.model.entity.ExchangeRateEntity;
 import com.xkodxdf.app.util.ConnectionProvider;
@@ -11,7 +11,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExchangeRateDaoImpl implements ExchangeRateDao<ExchangeRateDto, ExchangeRateEntity> {
+public class ExchangeRateDaoImpl implements ExchangeRateDao<ExchangeRateRequestDto, ExchangeRateEntity> {
 
     private static final String SAVE_SQL = """
             INSERT INTO exchange_rate (base_currency_id, target_currency_id, rate)
@@ -74,25 +74,25 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao<ExchangeRateDto, Exc
     }
 
     @Override
-    public ExchangeRateEntity save(ExchangeRateDto exchangeRateDto) {
+    public ExchangeRateEntity save(ExchangeRateRequestDto exchangeRateRequestDto) {
         try (Connection connection = ConnectionProvider.get();
              PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setString(1, exchangeRateDto.baseCurrencyCode());
-            preparedStatement.setString(2, exchangeRateDto.targetCurrencyCode());
-            preparedStatement.setBigDecimal(3, exchangeRateDto.rate());
+            preparedStatement.setString(1, exchangeRateRequestDto.baseCurrencyCode());
+            preparedStatement.setString(2, exchangeRateRequestDto.targetCurrencyCode());
+            preparedStatement.setBigDecimal(3, exchangeRateRequestDto.rate());
             preparedStatement.executeUpdate();
-            return get(exchangeRateDto);
+            return get(exchangeRateRequestDto);
         } catch (SQLException e) {
             throw new CurrencyExchangerException(e);
         }
     }
 
     @Override
-    public ExchangeRateEntity get(ExchangeRateDto exchangeRateDto) {
+    public ExchangeRateEntity get(ExchangeRateRequestDto exchangeRateRequestDto) {
         try (Connection connection = ConnectionProvider.get();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_BY_CODES_SQL)) {
-            preparedStatement.setString(1, exchangeRateDto.baseCurrencyCode());
-            preparedStatement.setString(2, exchangeRateDto.targetCurrencyCode());
+            preparedStatement.setString(1, exchangeRateRequestDto.baseCurrencyCode());
+            preparedStatement.setString(2, exchangeRateRequestDto.targetCurrencyCode());
             ResultSet resultSet = preparedStatement.executeQuery();
             if (!resultSet.next()) {
                 throw new CurrencyExchangerException();
@@ -104,16 +104,16 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao<ExchangeRateDto, Exc
     }
 
     @Override
-    public ExchangeRateEntity update(ExchangeRateDto exchangeRateDto) {
+    public ExchangeRateEntity update(ExchangeRateRequestDto exchangeRateRequestDto) {
         try (Connection connection = ConnectionProvider.get();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
-            preparedStatement.setBigDecimal(1, exchangeRateDto.rate());
-            preparedStatement.setString(2, exchangeRateDto.baseCurrencyCode());
-            preparedStatement.setString(3, exchangeRateDto.targetCurrencyCode());
+            preparedStatement.setBigDecimal(1, exchangeRateRequestDto.rate());
+            preparedStatement.setString(2, exchangeRateRequestDto.baseCurrencyCode());
+            preparedStatement.setString(3, exchangeRateRequestDto.targetCurrencyCode());
             if (preparedStatement.executeUpdate() == 0) {
                 throw new CurrencyExchangerException();
             }
-            return get(exchangeRateDto);
+            return get(exchangeRateRequestDto);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
