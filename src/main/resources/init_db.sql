@@ -7,7 +7,7 @@ CREATE TABLE currency
 );
 
 CREATE UNIQUE INDEX currency_code_index
-    ON currency (code, full_name);
+    ON currency (code);
 
 INSERT INTO currency(sign, code, full_name)
 VALUES ('$', 'USD', 'US Dollar'),
