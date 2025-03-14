@@ -20,8 +20,6 @@ public class CurrencyServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.setContentType("application/json");
-        resp.setCharacterEncoding("UTF-8");
         int excludeSlashSubstringIndex = 1;
         String code = req.getPathInfo().substring(excludeSlashSubstringIndex);
         CurrencyResponseDto currency = currencyService.get(new CurrencyRequestDto(code));
@@ -31,8 +29,6 @@ public class CurrencyServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("application/json");
-        resp.setCharacterEncoding("UTF-8");
         int excludeSlashSubstringIndex = 1;
         String code = req.getPathInfo().substring(excludeSlashSubstringIndex);
         CurrencyResponseDto deletedCurrency = currencyService.delete(new CurrencyRequestDto(code));

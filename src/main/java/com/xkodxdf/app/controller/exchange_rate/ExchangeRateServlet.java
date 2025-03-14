@@ -23,8 +23,6 @@ public class ExchangeRateServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("application/json");
-        resp.setCharacterEncoding("UTF-8");
         int excludeSlashSubstringIndex = 1;
         String codes = req.getPathInfo().substring(excludeSlashSubstringIndex);
         ExchangeRateResponseDto exchangeRate = exchangeRateService.get(
@@ -44,8 +42,6 @@ public class ExchangeRateServlet extends HttpServlet {
     }
 
     private void doPatch(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.setContentType("application/json");
-        resp.setCharacterEncoding("UTF-8");
         int excludeSlashSubstringIndex = 1;
         String codes = req.getPathInfo().substring(excludeSlashSubstringIndex);
         BigDecimal newRate = new BigDecimal(getNewRateString(req));
