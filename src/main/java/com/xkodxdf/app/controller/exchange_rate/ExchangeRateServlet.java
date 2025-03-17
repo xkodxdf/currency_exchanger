@@ -5,6 +5,8 @@ import com.xkodxdf.app.exception.CurrencyExchangerException;
 import com.xkodxdf.app.model.dto.ExchangeRateRequestDto;
 import com.xkodxdf.app.model.dto.ExchangeRateResponseDto;
 import com.xkodxdf.app.model.service.ExchangeRateService;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,8 +20,15 @@ import java.math.BigDecimal;
 @WebServlet("/exchangeRate/*")
 public class ExchangeRateServlet extends HttpServlet {
 
-    private final Gson gson = new Gson();
-    private final ExchangeRateService exchangeRateService = ExchangeRateService.getInstance();
+    private Gson gson;
+    private ExchangeRateService exchangeRateService;
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        ServletContext servletContext = config.getServletContext();
+        gson = (Gson) servletContext.getAttribute(Gson.class.getSimpleName());
+        exchangeRateService = (ExchangeRateService) servletContext.getAttribute(ExchangeRateService.class.getSimpleName());
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -45,8 +54,9 @@ public class ExchangeRateServlet extends HttpServlet {
         int excludeSlashSubstringIndex = 1;
         String codes = req.getPathInfo().substring(excludeSlashSubstringIndex);
         BigDecimal newRate = new BigDecimal(getNewRateString(req));
-        ExchangeRateResponseDto updatedExchangeRate =  exchangeRateService.update(
-                new ExchangeRateRequestDto(getBaseCurrencyCode(codes), getTargetCurrencyCode(codes), newRate));
+        ExchangeRateRequestDto exchangeRateRequestDto = new ExchangeRateRequestDto(
+                getBaseCurrencyCode(codes), getTargetCurrencyCode(codes), newRate);
+        ExchangeRateResponseDto updatedExchangeRate = exchangeRateService.update(exchangeRateRequestDto);
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.getWriter().write(gson.toJson(updatedExchangeRate));
     }

@@ -1,26 +1,18 @@
 package com.xkodxdf.app.model.service;
 
-import com.xkodxdf.app.model.dao.CurrencyDaoImpl;
+import com.xkodxdf.app.model.dao.interfaces.CurrencyDao;
 import com.xkodxdf.app.model.dto.CurrencyRequestDto;
 import com.xkodxdf.app.model.dto.CurrencyResponseDto;
 import com.xkodxdf.app.model.entity.CurrencyEntity;
 
 import java.util.List;
 
-public final class CurrencyService {
+public class CurrencyService {
 
-    private static CurrencyService INSTANCE;
+    private final CurrencyDao<CurrencyRequestDto, CurrencyEntity> currencyDao;
 
-    private final CurrencyDaoImpl currencyDao = CurrencyDaoImpl.getInstance();
-
-    private CurrencyService() {
-    }
-
-    public static CurrencyService getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new CurrencyService();
-        }
-        return INSTANCE;
+    public CurrencyService(CurrencyDao<CurrencyRequestDto, CurrencyEntity> currencyDao) {
+        this.currencyDao = currencyDao;
     }
 
     public CurrencyResponseDto save(CurrencyRequestDto requestDto) {

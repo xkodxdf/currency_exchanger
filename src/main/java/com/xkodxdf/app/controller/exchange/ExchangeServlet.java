@@ -5,6 +5,8 @@ import com.xkodxdf.app.model.dto.ExchangeRateRequestDto;
 import com.xkodxdf.app.model.dto.ExchangeRequestDto;
 import com.xkodxdf.app.model.dto.ExchangeResponseDto;
 import com.xkodxdf.app.model.service.ExchangeService;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -17,8 +19,15 @@ import java.math.BigDecimal;
 @WebServlet("/exchange")
 public class ExchangeServlet extends HttpServlet {
 
-    private final Gson gson = new Gson();
-    private final ExchangeService exchangeService = ExchangeService.getInstance();
+    private Gson gson;
+    private ExchangeService exchangeService;
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        ServletContext servletContext = config.getServletContext();
+        gson = (Gson) servletContext.getAttribute(Gson.class.getSimpleName());
+        exchangeService = (ExchangeService) servletContext.getAttribute(ExchangeService.class.getSimpleName());
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -26,10 +35,11 @@ public class ExchangeServlet extends HttpServlet {
         String targetCurrencyCode = req.getParameter("to");
         String amountString = req.getParameter("amount");
         BigDecimal amount = new BigDecimal(amountString);
-        ExchangeResponseDto exchangeEntity = exchangeService.getExchangeEntity(
-                new ExchangeRequestDto(new ExchangeRateRequestDto(baseCurrencyCode, targetCurrencyCode), amount)
-        );
+        ExchangeRateRequestDto exchangeRateRequestDto = new ExchangeRateRequestDto(baseCurrencyCode, targetCurrencyCode);
+        ExchangeRequestDto exchangeRequestDto = new ExchangeRequestDto(exchangeRateRequestDto, amount);
+        ExchangeResponseDto exchange = exchangeService.getExchangeEntity(exchangeRequestDto);
+        resp.setContentType("application/json");
         resp.setStatus(HttpServletResponse.SC_OK);
-        resp.getWriter().write(gson.toJson(exchangeEntity));
+        resp.getWriter().write(gson.toJson(exchange));
     }
 }

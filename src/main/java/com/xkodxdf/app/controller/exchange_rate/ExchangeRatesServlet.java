@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.xkodxdf.app.model.dto.ExchangeRateRequestDto;
 import com.xkodxdf.app.model.dto.ExchangeRateResponseDto;
 import com.xkodxdf.app.model.service.ExchangeRateService;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -17,8 +19,15 @@ import java.util.List;
 @WebServlet("/exchangeRates")
 public class ExchangeRatesServlet extends HttpServlet {
 
-    private final Gson gson = new Gson();
-    private final ExchangeRateService exchangeRateService = ExchangeRateService.getInstance();
+    private Gson gson;
+    private ExchangeRateService exchangeRateService;
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        ServletContext servletContext = config.getServletContext();
+        gson = (Gson) servletContext.getAttribute(Gson.class.getSimpleName());
+        exchangeRateService = (ExchangeRateService) servletContext.getAttribute(ExchangeRateService.class.getSimpleName());
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -35,6 +44,6 @@ public class ExchangeRatesServlet extends HttpServlet {
         ExchangeRateResponseDto saveExchangeRate = exchangeRateService.save(
                 new ExchangeRateRequestDto(baseCurrencyCode, targetCurrencyCode, rate));
         resp.setStatus(HttpServletResponse.SC_CREATED);
-        resp.getWriter().write(new Gson().toJson(saveExchangeRate));
+        resp.getWriter().write(gson.toJson(saveExchangeRate));
     }
 }

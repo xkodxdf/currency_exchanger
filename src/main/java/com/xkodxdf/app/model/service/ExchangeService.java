@@ -1,25 +1,18 @@
 package com.xkodxdf.app.model.service;
 
-import com.xkodxdf.app.model.dao.ExchangeRateDaoImpl;
+import com.xkodxdf.app.model.dao.interfaces.ExchangeRateDao;
+import com.xkodxdf.app.model.dto.ExchangeRateRequestDto;
 import com.xkodxdf.app.model.dto.ExchangeRequestDto;
 import com.xkodxdf.app.model.dto.ExchangeResponseDto;
 import com.xkodxdf.app.model.entity.ExchangeEntity;
 import com.xkodxdf.app.model.entity.ExchangeRateEntity;
 
-public final class ExchangeService {
+public class ExchangeService {
 
-    private static ExchangeService INSTANCE;
+    private final ExchangeRateDao<ExchangeRateRequestDto, ExchangeRateEntity> exchangeRateDao;
 
-    private final ExchangeRateDaoImpl exchangeRateDao = ExchangeRateDaoImpl.getInstance();
-
-    private ExchangeService() {
-    }
-
-    public static ExchangeService getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new ExchangeService();
-        }
-        return INSTANCE;
+    public ExchangeService(ExchangeRateDao<ExchangeRateRequestDto, ExchangeRateEntity> exchangeRateDao) {
+        this.exchangeRateDao = exchangeRateDao;
     }
 
     public ExchangeResponseDto getExchangeEntity(ExchangeRequestDto requestDto) {
