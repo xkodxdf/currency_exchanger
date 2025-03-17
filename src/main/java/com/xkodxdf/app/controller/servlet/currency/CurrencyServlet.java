@@ -1,4 +1,4 @@
-package com.xkodxdf.app.controller.currency;
+package com.xkodxdf.app.controller.servlet.currency;
 
 import com.google.gson.Gson;
 import com.xkodxdf.app.model.dto.CurrencyRequestDto;
@@ -13,10 +13,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.List;
 
-@WebServlet("/currencies")
-public class CurrenciesServlet extends HttpServlet {
+@WebServlet("/currency/*")
+public class CurrencyServlet extends HttpServlet {
 
     private Gson gson;
     private CurrencyService currencyService;
@@ -30,18 +29,19 @@ public class CurrenciesServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        List<CurrencyResponseDto> currencies = currencyService.getAll();
+        int excludeSlashSubstringIndex = 1;
+        String code = req.getPathInfo().substring(excludeSlashSubstringIndex);
+        CurrencyResponseDto currency = currencyService.get(new CurrencyRequestDto(code));
         resp.setStatus(HttpServletResponse.SC_OK);
-        resp.getWriter().write(gson.toJson(currencies));
+        resp.getWriter().write(gson.toJson(currency));
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String name = req.getParameter("name");
-        String code = req.getParameter("code");
-        String sign = req.getParameter("sign");
-        CurrencyResponseDto savedCurrency = currencyService.save(new CurrencyRequestDto(name, code, sign));
-        resp.setStatus(HttpServletResponse.SC_CREATED);
-        resp.getWriter().write(gson.toJson(savedCurrency));
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        int excludeSlashSubstringIndex = 1;
+        String code = req.getPathInfo().substring(excludeSlashSubstringIndex);
+        CurrencyResponseDto deletedCurrency = currencyService.delete(new CurrencyRequestDto(code));
+        resp.setStatus(HttpServletResponse.SC_OK);
+        resp.getWriter().write(gson.toJson(deletedCurrency));
     }
 }

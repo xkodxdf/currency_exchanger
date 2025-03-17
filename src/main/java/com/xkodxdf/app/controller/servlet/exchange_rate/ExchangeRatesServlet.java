@@ -1,4 +1,4 @@
-package com.xkodxdf.app.controller.exchange_rate;
+package com.xkodxdf.app.controller.servlet.exchange_rate;
 
 import com.google.gson.Gson;
 import com.xkodxdf.app.model.dto.ExchangeRateRequestDto;
