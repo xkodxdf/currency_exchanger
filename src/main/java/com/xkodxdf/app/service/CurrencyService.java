@@ -1,8 +1,8 @@
-package com.xkodxdf.app.model.service;
+package com.xkodxdf.app.service;
 
 import com.xkodxdf.app.model.dao.interfaces.CurrencyDao;
-import com.xkodxdf.app.model.dto.CurrencyRequestDto;
-import com.xkodxdf.app.model.dto.CurrencyResponseDto;
+import com.xkodxdf.app.dto.CurrencyRequestDto;
+import com.xkodxdf.app.dto.CurrencyResponseDto;
 import com.xkodxdf.app.model.entity.CurrencyEntity;
 
 import java.util.List;

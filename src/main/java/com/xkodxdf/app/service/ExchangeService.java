@@ -1,9 +1,9 @@
-package com.xkodxdf.app.model.service;
+package com.xkodxdf.app.service;
 
 import com.xkodxdf.app.model.dao.interfaces.ExchangeRateDao;
-import com.xkodxdf.app.model.dto.ExchangeRateRequestDto;
-import com.xkodxdf.app.model.dto.ExchangeRequestDto;
-import com.xkodxdf.app.model.dto.ExchangeResponseDto;
+import com.xkodxdf.app.dto.ExchangeRateRequestDto;
+import com.xkodxdf.app.dto.ExchangeRequestDto;
+import com.xkodxdf.app.dto.ExchangeResponseDto;
 import com.xkodxdf.app.model.entity.ExchangeEntity;
 import com.xkodxdf.app.model.entity.ExchangeRateEntity;
 
