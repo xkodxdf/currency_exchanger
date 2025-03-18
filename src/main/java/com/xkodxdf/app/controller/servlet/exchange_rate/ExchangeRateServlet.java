@@ -1,10 +1,13 @@
 package com.xkodxdf.app.controller.servlet.exchange_rate;
 
 import com.google.gson.Gson;
+import com.xkodxdf.app.dto.ExchangeRateRequestDto;
+import com.xkodxdf.app.dto.ExchangeRateResponseDto;
 import com.xkodxdf.app.exception.CurrencyExchangerException;
-import com.xkodxdf.app.model.dto.ExchangeRateRequestDto;
-import com.xkodxdf.app.model.dto.ExchangeRateResponseDto;
-import com.xkodxdf.app.model.service.ExchangeRateService;
+import com.xkodxdf.app.exception.InvalidExchangeRateCodeException;
+import com.xkodxdf.app.exception.InvalidInputDataException;
+import com.xkodxdf.app.exception.NotAllRequiredParametersPassedException;
+import com.xkodxdf.app.service.ExchangeRateService;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -32,10 +35,7 @@ public class ExchangeRateServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int excludeSlashSubstringIndex = 1;
-        String codes = req.getPathInfo().substring(excludeSlashSubstringIndex);
-        ExchangeRateResponseDto exchangeRate = exchangeRateService.get(
-                new ExchangeRateRequestDto(getBaseCurrencyCode(codes), getTargetCurrencyCode(codes)));
+        ExchangeRateResponseDto exchangeRate = exchangeRateService.get(getExchangeRateRequestDto(req));
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.getWriter().write(gson.toJson(exchangeRate));
     }
@@ -51,14 +51,30 @@ public class ExchangeRateServlet extends HttpServlet {
     }
 
     private void doPatch(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        int excludeSlashSubstringIndex = 1;
-        String codes = req.getPathInfo().substring(excludeSlashSubstringIndex);
-        BigDecimal newRate = new BigDecimal(getNewRateString(req));
-        ExchangeRateRequestDto exchangeRateRequestDto = new ExchangeRateRequestDto(
-                getBaseCurrencyCode(codes), getTargetCurrencyCode(codes), newRate);
-        ExchangeRateResponseDto updatedExchangeRate = exchangeRateService.update(exchangeRateRequestDto);
+        ExchangeRateResponseDto updatedExchangeRate = exchangeRateService.update(getExchangeRateRequestDto(req));
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.getWriter().write(gson.toJson(updatedExchangeRate));
+    }
+
+    private ExchangeRateRequestDto getExchangeRateRequestDto(HttpServletRequest req) {
+        String codes = getCodes(req);
+        try {
+            BigDecimal newRate = new BigDecimal(getNewRateString(req));
+            return new ExchangeRateRequestDto(getBaseCurrencyCode(codes), getTargetCurrencyCode(codes), newRate);
+        } catch (NumberFormatException e) {
+            throw new InvalidInputDataException();
+        }
+
+    }
+
+    private String getCodes(HttpServletRequest req) {
+        String codesInUrl = req.getPathInfo();
+        int codeWithSlashLength = 7;
+        if (codesInUrl == null || codesInUrl.length() != codeWithSlashLength) {
+            throw new InvalidExchangeRateCodeException();
+        }
+        int withoutSlashIndex = 1;
+        return codesInUrl.substring(withoutSlashIndex);
     }
 
     private static String getNewRateString(HttpServletRequest req) {
@@ -72,13 +88,14 @@ public class ExchangeRateServlet extends HttpServlet {
             throw new CurrencyExchangerException(e);
         }
         String requestBody = sb.toString();
-        String newRateString;
-        if (requestBody.contains("rate=")) {
-            newRateString = requestBody.substring(5);
-        } else {
-            throw new CurrencyExchangerException();
+        String rateParameter = "rate=";
+        if (requestBody.isEmpty() || rateParameter.equals(requestBody)) {
+            throw new NotAllRequiredParametersPassedException();
         }
-        return newRateString;
+        if (requestBody.contains(rateParameter)) {
+            return requestBody.substring(rateParameter.length());
+        }
+        throw new CurrencyExchangerException();
     }
 
     private String getBaseCurrencyCode(String codePair) {

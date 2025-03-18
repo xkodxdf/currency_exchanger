@@ -1,9 +1,10 @@
 package com.xkodxdf.app.controller.servlet.currency;
 
 import com.google.gson.Gson;
-import com.xkodxdf.app.model.dto.CurrencyRequestDto;
-import com.xkodxdf.app.model.dto.CurrencyResponseDto;
-import com.xkodxdf.app.model.service.CurrencyService;
+import com.xkodxdf.app.exception.InvalidCurrencyCodeException;
+import com.xkodxdf.app.dto.CurrencyRequestDto;
+import com.xkodxdf.app.dto.CurrencyResponseDto;
+import com.xkodxdf.app.service.CurrencyService;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -29,8 +30,7 @@ public class CurrencyServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        int excludeSlashSubstringIndex = 1;
-        String code = req.getPathInfo().substring(excludeSlashSubstringIndex);
+        String code = getCode(req);
         CurrencyResponseDto currency = currencyService.get(new CurrencyRequestDto(code));
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.getWriter().write(gson.toJson(currency));
@@ -38,10 +38,19 @@ public class CurrencyServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int excludeSlashSubstringIndex = 1;
-        String code = req.getPathInfo().substring(excludeSlashSubstringIndex);
+        String code = getCode(req);
         CurrencyResponseDto deletedCurrency = currencyService.delete(new CurrencyRequestDto(code));
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.getWriter().write(gson.toJson(deletedCurrency));
+    }
+
+    private String getCode(HttpServletRequest req) {
+        String codeInUrl = req.getPathInfo();
+        int codeWithSlashLength = 4;
+        if (codeInUrl == null || codeInUrl.length() != codeWithSlashLength) {
+            throw new InvalidCurrencyCodeException();
+        }
+        int withoutSlashIndex = 1;
+        return codeInUrl.substring(withoutSlashIndex);
     }
 }

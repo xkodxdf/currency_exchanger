@@ -1,6 +1,6 @@
 package com.xkodxdf.app.model.entity;
 
-import com.xkodxdf.app.model.dto.CurrencyRequestDto;
+import com.xkodxdf.app.dto.CurrencyRequestDto;
 
 import java.util.Objects;
 

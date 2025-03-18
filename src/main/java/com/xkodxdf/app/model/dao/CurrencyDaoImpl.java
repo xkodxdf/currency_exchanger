@@ -1,9 +1,10 @@
 package com.xkodxdf.app.model.dao;
 
 
-import com.xkodxdf.app.exception.CurrencyExchangerException;
+import com.xkodxdf.app.ExceptionConverter;
+import com.xkodxdf.app.dto.CurrencyRequestDto;
+import com.xkodxdf.app.exception.DataNotFoundExcepton;
 import com.xkodxdf.app.model.dao.interfaces.CurrencyDao;
-import com.xkodxdf.app.model.dto.CurrencyRequestDto;
 import com.xkodxdf.app.model.entity.CurrencyEntity;
 import com.xkodxdf.app.util.ConnectionProvider;
 
@@ -63,7 +64,7 @@ public class CurrencyDaoImpl implements CurrencyDao<CurrencyRequestDto, Currency
             long currencyId = generatedKeys.getLong(ID_COLUMN_LABEL);
             return new CurrencyEntity(currencyId, requestDto);
         } catch (SQLException e) {
-            throw new CurrencyExchangerException(e);
+            throw ExceptionConverter.convertSqlToCurrencyExchangerException(e);
         }
     }
 
@@ -74,11 +75,11 @@ public class CurrencyDaoImpl implements CurrencyDao<CurrencyRequestDto, Currency
             preparedStatement.setString(1, requestDto.code());
             ResultSet resultSet = preparedStatement.executeQuery();
             if (!resultSet.next()) {
-                throw new CurrencyExchangerException();
+                throw new DataNotFoundExcepton();
             }
             return buildCurrency(resultSet);
         } catch (SQLException e) {
-            throw new CurrencyExchangerException(e);
+            throw ExceptionConverter.convertSqlToCurrencyExchangerException(e);
         }
     }
 
@@ -88,12 +89,10 @@ public class CurrencyDaoImpl implements CurrencyDao<CurrencyRequestDto, Currency
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_BY_CODE_SQL)) {
             preparedStatement.setString(1, requestDto.code());
             CurrencyEntity currencyToDelete = get(requestDto);
-            if (preparedStatement.executeUpdate() == 0) {
-                throw new CurrencyExchangerException();
-            }
+            preparedStatement.executeUpdate();
             return currencyToDelete;
         } catch (SQLException e) {
-            throw new CurrencyExchangerException(e);
+            throw ExceptionConverter.convertSqlToCurrencyExchangerException(e);
         }
     }
 
@@ -108,7 +107,7 @@ public class CurrencyDaoImpl implements CurrencyDao<CurrencyRequestDto, Currency
             }
             return currencies;
         } catch (SQLException e) {
-            throw new CurrencyExchangerException(e);
+            throw ExceptionConverter.convertSqlToCurrencyExchangerException(e);
         }
     }
 
