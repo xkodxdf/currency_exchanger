@@ -1,4 +1,4 @@
-package com.xkodxdf.app.model.dto;
+package com.xkodxdf.app.dto;
 
 import com.xkodxdf.app.model.entity.CurrencyEntity;
 
