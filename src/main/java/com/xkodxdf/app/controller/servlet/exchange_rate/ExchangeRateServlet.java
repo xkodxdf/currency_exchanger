@@ -1,18 +1,14 @@
 package com.xkodxdf.app.controller.servlet.exchange_rate;
 
-import com.google.gson.Gson;
+import com.xkodxdf.app.controller.RequestDataVerifier;
 import com.xkodxdf.app.dto.ExchangeRateRequestDto;
 import com.xkodxdf.app.dto.ExchangeRateResponseDto;
 import com.xkodxdf.app.exception.CurrencyExchangerException;
 import com.xkodxdf.app.exception.InvalidExchangeRateCodeException;
 import com.xkodxdf.app.exception.InvalidInputDataException;
 import com.xkodxdf.app.exception.NotAllRequiredParametersPassedException;
-import com.xkodxdf.app.service.ExchangeRateService;
-import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -21,23 +17,12 @@ import java.io.IOException;
 import java.math.BigDecimal;
 
 @WebServlet("/exchangeRate/*")
-public class ExchangeRateServlet extends HttpServlet {
-
-    private Gson gson;
-    private ExchangeRateService exchangeRateService;
-
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        ServletContext servletContext = config.getServletContext();
-        gson = (Gson) servletContext.getAttribute(Gson.class.getSimpleName());
-        exchangeRateService = (ExchangeRateService) servletContext.getAttribute(ExchangeRateService.class.getSimpleName());
-    }
+public class ExchangeRateServlet extends BaseExchangeRateServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ExchangeRateResponseDto exchangeRate = exchangeRateService.get(getExchangeRateRequestDto(req));
-        resp.setStatus(HttpServletResponse.SC_OK);
-        resp.getWriter().write(gson.toJson(exchangeRate));
+        setResponse(HttpServletResponse.SC_OK, exchangeRate, resp);
     }
 
     @Override
@@ -52,25 +37,22 @@ public class ExchangeRateServlet extends HttpServlet {
 
     private void doPatch(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         ExchangeRateResponseDto updatedExchangeRate = exchangeRateService.update(getExchangeRateRequestDto(req));
-        resp.setStatus(HttpServletResponse.SC_OK);
-        resp.getWriter().write(gson.toJson(updatedExchangeRate));
+        setResponse(HttpServletResponse.SC_OK, updatedExchangeRate, resp);
     }
 
     private ExchangeRateRequestDto getExchangeRateRequestDto(HttpServletRequest req) {
         String codes = getCodes(req);
-        try {
-            BigDecimal newRate = new BigDecimal(getNewRateString(req));
-            return new ExchangeRateRequestDto(getBaseCurrencyCode(codes), getTargetCurrencyCode(codes), newRate);
-        } catch (NumberFormatException e) {
+        String newRateString = getNewRateString(req);
+        if (!RequestDataVerifier.canBeConvertedToBigDecimal(newRateString)) {
             throw new InvalidInputDataException();
         }
-
+        BigDecimal newRate = new BigDecimal(newRateString);
+        return new ExchangeRateRequestDto(getBaseCurrencyCode(codes), getTargetCurrencyCode(codes), newRate);
     }
 
     private String getCodes(HttpServletRequest req) {
         String codesInUrl = req.getPathInfo();
-        int codeWithSlashLength = 7;
-        if (codesInUrl == null || codesInUrl.length() != codeWithSlashLength) {
+        if (!RequestDataVerifier.isUrlCurrencyCodePairLegal(codesInUrl)) {
             throw new InvalidExchangeRateCodeException();
         }
         int withoutSlashIndex = 1;
@@ -89,7 +71,7 @@ public class ExchangeRateServlet extends HttpServlet {
         }
         String requestBody = sb.toString();
         String rateParameter = "rate=";
-        if (requestBody.isEmpty() || rateParameter.equals(requestBody)) {
+        if (!RequestDataVerifier.isDataPresent(rateParameter)) {
             throw new NotAllRequiredParametersPassedException();
         }
         if (requestBody.contains(rateParameter)) {
