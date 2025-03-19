@@ -64,7 +64,7 @@ public class CurrencyDaoImpl implements CurrencyDao<CurrencyRequestDto, Currency
             long currencyId = generatedKeys.getLong(ID_COLUMN_LABEL);
             return new CurrencyEntity(currencyId, requestDto);
         } catch (SQLException e) {
-            throw ExceptionConverter.convertSqlToCurrencyExchangerException(e);
+            throw ExceptionConverter.toCurrencyExchangerException(e);
         }
     }
 
@@ -79,7 +79,7 @@ public class CurrencyDaoImpl implements CurrencyDao<CurrencyRequestDto, Currency
             }
             return buildCurrency(resultSet);
         } catch (SQLException e) {
-            throw ExceptionConverter.convertSqlToCurrencyExchangerException(e);
+            throw ExceptionConverter.toCurrencyExchangerException(e);
         }
     }
 
@@ -92,7 +92,7 @@ public class CurrencyDaoImpl implements CurrencyDao<CurrencyRequestDto, Currency
             preparedStatement.executeUpdate();
             return currencyToDelete;
         } catch (SQLException e) {
-            throw ExceptionConverter.convertSqlToCurrencyExchangerException(e);
+            throw ExceptionConverter.toCurrencyExchangerException(e);
         }
     }
 
@@ -107,7 +107,7 @@ public class CurrencyDaoImpl implements CurrencyDao<CurrencyRequestDto, Currency
             }
             return currencies;
         } catch (SQLException e) {
-            throw ExceptionConverter.convertSqlToCurrencyExchangerException(e);
+            throw ExceptionConverter.toCurrencyExchangerException(e);
         }
     }
 

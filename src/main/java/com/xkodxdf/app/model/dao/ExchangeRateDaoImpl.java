@@ -84,7 +84,7 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao<ExchangeRateRequestD
             preparedStatement.executeUpdate();
             return get(exchangeRateRequestDto);
         } catch (SQLException e) {
-            throw ExceptionConverter.convertSqlToCurrencyExchangerException(e);
+            throw ExceptionConverter.toCurrencyExchangerException(e);
         }
     }
 
@@ -100,7 +100,7 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao<ExchangeRateRequestD
             }
             return buildExchangeRateEntity(resultSet);
         } catch (SQLException e) {
-            throw ExceptionConverter.convertSqlToCurrencyExchangerException(e);
+            throw ExceptionConverter.toCurrencyExchangerException(e);
         }
     }
 
@@ -114,7 +114,7 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao<ExchangeRateRequestD
             preparedStatement.executeUpdate();
             return get(exchangeRateRequestDto);
         } catch (SQLException e) {
-            throw ExceptionConverter.convertSqlToCurrencyExchangerException(e);
+            throw ExceptionConverter.toCurrencyExchangerException(e);
         }
     }
 
@@ -128,7 +128,7 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao<ExchangeRateRequestD
                 exchangeRates.add(buildExchangeRateEntity(resultSet));
             }
         } catch (SQLException e) {
-            throw ExceptionConverter.convertSqlToCurrencyExchangerException(e);
+            throw ExceptionConverter.toCurrencyExchangerException(e);
         }
         return exchangeRates;
     }
