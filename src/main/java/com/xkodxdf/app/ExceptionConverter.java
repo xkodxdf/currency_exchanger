@@ -12,8 +12,7 @@ public final class ExceptionConverter {
     private ExceptionConverter() {
     }
 
-
-    public static ErrorResponse convertExceptionToErrorResponse(Throwable t) {
+    public static ErrorResponse toErrorResponse(Throwable t) {
         if (t instanceof InvalidInputDataException) {
             return new ErrorResponse(HttpServletResponse.SC_BAD_REQUEST, ErrorMessage.INPUT_DATA_ERR);
         }
@@ -35,15 +34,15 @@ public final class ExceptionConverter {
         return new ErrorResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ErrorMessage.UNEXPECTED_ERR);
     }
 
-    public static CurrencyExchangerException convertSqlToCurrencyExchangerException(SQLException e) {
+    public static CurrencyExchangerException toCurrencyExchangerException(SQLException e) {
         if (e instanceof PSQLException) {
             String sqlState = e.getSQLState();
             String duplicateErrCode = "23505";
-            String nullErr = "23502";
+            String nullErrCode = "23502";
             if (duplicateErrCode.equals(sqlState)) {
                 return new DataAlreadyExistException(e);
             }
-            if (nullErr.equals(sqlState)) {
+            if (nullErrCode.equals(sqlState)) {
                 return new DataNotFoundExcepton();
             }
         }
