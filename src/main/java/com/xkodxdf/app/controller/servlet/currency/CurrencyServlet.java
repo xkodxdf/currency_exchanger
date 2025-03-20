@@ -14,8 +14,8 @@ public class CurrencyServlet extends BaseCurrencyServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String code = getCode(req);
-        CurrencyResponseDto currency = currencyService.get(new CurrencyRequestDto(code));
-        setResponse(HttpServletResponse.SC_OK, currency, resp);
+        CurrencyResponseDto requestedCurrency = currencyService.get(new CurrencyRequestDto(code));
+        setResponse(HttpServletResponse.SC_OK, requestedCurrency, resp);
     }
 
     @Override

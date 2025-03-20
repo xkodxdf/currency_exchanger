@@ -13,8 +13,8 @@ public class CurrenciesServlet extends BaseCurrencyServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        List<CurrencyResponseDto> currencies = currencyService.getAll();
-        setResponse(HttpServletResponse.SC_OK, currencies, resp);
+        List<CurrencyResponseDto> requestedCurrencies = currencyService.getAll();
+        setResponse(HttpServletResponse.SC_OK, requestedCurrencies, resp);
     }
 
     @Override

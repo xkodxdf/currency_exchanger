@@ -15,9 +15,9 @@ public class ExchangeService {
         this.exchangeRateDao = exchangeRateDao;
     }
 
-    public ExchangeResponseDto getExchangeEntity(ExchangeRequestDto requestDto) {
-        ExchangeRateEntity exchangeRate = exchangeRateDao.get(requestDto.exchangeRateRequestDto());
-        ExchangeEntity exchangeEntity = new ExchangeEntity(exchangeRate, requestDto.amount());
+    public ExchangeResponseDto getExchangeResponseDto(ExchangeRequestDto exchangeRequestDto) {
+        ExchangeRateEntity exchangeRate = exchangeRateDao.get(exchangeRequestDto.exchangeRateRequestDto());
+        ExchangeEntity exchangeEntity = new ExchangeEntity(exchangeRate, exchangeRequestDto.amount());
         return new ExchangeResponseDto(exchangeEntity);
     }
 }

@@ -35,10 +35,10 @@ public class ExchangeServlet extends BaseServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ExchangeResponseDto exchange = exchangeService.getExchangeEntity(getExchangeRequestDto(req));
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        ExchangeResponseDto exchangeResult = exchangeService.getExchangeResponseDto(getExchangeRequestDto(req));
         resp.setContentType("application/json");
-        setResponse(HttpServletResponse.SC_OK, exchange, resp);
+        setResponse(HttpServletResponse.SC_OK, exchangeResult, resp);
     }
 
     private ExchangeRequestDto getExchangeRequestDto(HttpServletRequest req) {

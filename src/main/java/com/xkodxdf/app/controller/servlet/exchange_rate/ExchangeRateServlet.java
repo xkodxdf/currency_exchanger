@@ -20,9 +20,9 @@ import java.math.BigDecimal;
 public class ExchangeRateServlet extends BaseExchangeRateServlet {
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ExchangeRateResponseDto exchangeRate = exchangeRateService.get(getExchangeRateRequestDto(req));
-        setResponse(HttpServletResponse.SC_OK, exchangeRate, resp);
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        ExchangeRateResponseDto requestedExchangeRate = exchangeRateService.get(getExchangeRateRequestDto(req));
+        setResponse(HttpServletResponse.SC_OK, requestedExchangeRate, resp);
     }
 
     @Override

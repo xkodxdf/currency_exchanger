@@ -18,14 +18,14 @@ public class ExchangeRatesServlet extends BaseExchangeRateServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        List<ExchangeRateResponseDto> exchangeRates = exchangeRateService.getAll();
-        setResponse(HttpServletResponse.SC_OK, exchangeRates, resp);
+        List<ExchangeRateResponseDto> requestedExchangeRates = exchangeRateService.getAll();
+        setResponse(HttpServletResponse.SC_OK, requestedExchangeRates, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        ExchangeRateResponseDto saveExchangeRate = exchangeRateService.save(getRequestDto(req));
-        setResponse(HttpServletResponse.SC_CREATED, saveExchangeRate, resp);
+        ExchangeRateResponseDto savedExchangeRate = exchangeRateService.save(getRequestDto(req));
+        setResponse(HttpServletResponse.SC_CREATED, savedExchangeRate, resp);
     }
 
     private ExchangeRateRequestDto getRequestDto(HttpServletRequest req) {
