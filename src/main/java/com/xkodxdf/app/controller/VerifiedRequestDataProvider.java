@@ -1,9 +1,11 @@
 package com.xkodxdf.app.controller;
 
+import com.xkodxdf.app.ErrorMessage;
 import com.xkodxdf.app.dto.CurrencyRequestDto;
 import com.xkodxdf.app.dto.ExchangeRateRequestDto;
 import com.xkodxdf.app.dto.ExchangeRequestDto;
-import com.xkodxdf.app.exception.*;
+import com.xkodxdf.app.exception.CurrencyExchangerException;
+import com.xkodxdf.app.exception.InvalidRequestDataException;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.BufferedReader;
@@ -26,7 +28,7 @@ public class VerifiedRequestDataProvider {
     public void verifyDataPresence(String... data) {
         for (String s : data) {
             if (s == null || s.isEmpty()) {
-                throw new NotAllRequiredParametersPassedException();
+                throw new InvalidRequestDataException(ErrorMessage.REQUIRED_PARAMS_ERR);
             }
         }
     }
@@ -94,7 +96,7 @@ public class VerifiedRequestDataProvider {
         String processedCode = requestCode.trim().replace("/", "")
                 .replace(" ", "");
         if (processedCode.length() != CURRENCY_CODE_VALID_LENGTH) {
-            throw new InvalidCurrencyCodeException();
+            throw new InvalidRequestDataException(ErrorMessage.INVALID_CURRENCY_CODE);
         }
         return processedCode;
     }
@@ -122,7 +124,7 @@ public class VerifiedRequestDataProvider {
         String processedCodePair = requestCodePair.trim().replace("/", "")
                 .replace(" ", "");
         if (processedCodePair.length() != CURRENCY_CODE_VALID_LENGTH * 2) {
-            throw new InvalidExchangeRateCodeException();
+            throw new InvalidRequestDataException(ErrorMessage.INVALID_EXCHANGE_RATE_CODE_ERR);
         }
         return processedCodePair;
     }
