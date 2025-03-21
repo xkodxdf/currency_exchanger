@@ -92,8 +92,10 @@ public class VerifiedRequestDataProvider {
 
     private String getProcessedCurrencyCode(String requestCode) {
         verifyDataPresence(requestCode);
-        String processedCode = requestCode.trim().replace("/", "")
-                .replace(" ", "");
+        String processedCode = requestCode.trim()
+                .replace("/", "")
+                .replace(" ", "")
+                .toUpperCase();
         if (processedCode.length() != CURRENCY_CODE_VALID_LENGTH) {
             throw new InvalidRequestDataException(ErrorMessage.INVALID_CURRENCY_CODE);
         }
@@ -120,8 +122,10 @@ public class VerifiedRequestDataProvider {
 
     private String getProcessedCurrencyCodePair(String requestCodePair) {
         verifyDataPresence(requestCodePair);
-        String processedCodePair = requestCodePair.trim().replace("/", "")
-                .replace(" ", "");
+        String processedCodePair = requestCodePair.trim()
+                .replace("/", "")
+                .replace(" ", "")
+                .toUpperCase();
         if (processedCodePair.length() != CURRENCY_CODE_VALID_LENGTH * 2) {
             throw new InvalidRequestDataException(ErrorMessage.INVALID_EXCHANGE_RATE_CODE_ERR);
         }
