@@ -90,7 +90,7 @@ public class VerifiedRequestDataProvider {
         return new ExchangeRequestDto(exchangeRateRequestDto, amountToExchange);
     }
 
-    public String getProcessedCurrencyCode(String requestCode) {
+    private String getProcessedCurrencyCode(String requestCode) {
         verifyDataPresence(requestCode);
         String processedCode = requestCode.trim().replace("/", "")
                 .replace(" ", "");
@@ -100,7 +100,7 @@ public class VerifiedRequestDataProvider {
         return processedCode;
     }
 
-    public String getProcessedCurrencyName(String requestName) {
+    private String getProcessedCurrencyName(String requestName) {
         verifyDataPresence(requestName);
         String processedName = requestName.trim();
         if (processedName.length() > CURRENCY_NAME_MAX_LENGTH) {
@@ -109,7 +109,7 @@ public class VerifiedRequestDataProvider {
         return processedName;
     }
 
-    public String getProcessedCurrencySign(String requestSign) {
+    private String getProcessedCurrencySign(String requestSign) {
         verifyDataPresence(requestSign);
         String processedSign = requestSign.trim().replace(" ", "");
         if (processedSign.length() > CURRENCY_SIGN_MAX_LENGTH) {
@@ -118,7 +118,7 @@ public class VerifiedRequestDataProvider {
         return processedSign;
     }
 
-    public String getProcessedCurrencyCodePair(String requestCodePair) {
+    private String getProcessedCurrencyCodePair(String requestCodePair) {
         verifyDataPresence(requestCodePair);
         String processedCodePair = requestCodePair.trim().replace("/", "")
                 .replace(" ", "");
@@ -128,7 +128,7 @@ public class VerifiedRequestDataProvider {
         return processedCodePair;
     }
 
-    public String getProcessedRateForUpdate(HttpServletRequest req) {
+    private String getProcessedRateForUpdate(HttpServletRequest req) {
         String requestBody = getRequestBodyAsString(req);
         if (requestBody.contains(UPDATE_RATE_PARAMETER)) {
             String rateValue = requestBody.replace(UPDATE_RATE_PARAMETER, "");
