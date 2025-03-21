@@ -29,7 +29,8 @@ public class CurrencyDaoImpl implements CurrencyDao<CurrencyRequestDto, Currency
 
     private static final String DELETE_BY_CODE_SQL = """
             DELETE FROM currency
-            WHERE code = ?;
+            WHERE code = ?
+            RETURNING id, sign, code, full_name;
             """;
 
     private static final String GET_ALL_SQL = """
@@ -69,28 +70,12 @@ public class CurrencyDaoImpl implements CurrencyDao<CurrencyRequestDto, Currency
 
     @Override
     public CurrencyEntity get(CurrencyRequestDto requestDto) {
-        try (Connection connection = ConnectionProvider.get();
-             PreparedStatement preparedStatement = connection.prepareStatement(GET_BY_CODE_SQL)) {
-            preparedStatement.setString(1, requestDto.code());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            resultSet.next();
-            return buildCurrency(resultSet);
-        } catch (Exception e) {
-            throw ExceptionConverter.toCurrencyExchangerException(e);
-        }
+        return getCurrencyEntity(requestDto, GET_BY_CODE_SQL);
     }
 
     @Override
     public CurrencyEntity delete(CurrencyRequestDto requestDto) {
-        try (Connection connection = ConnectionProvider.get();
-             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_BY_CODE_SQL)) {
-            preparedStatement.setString(1, requestDto.code());
-            CurrencyEntity currencyToDelete = get(requestDto);
-            preparedStatement.executeUpdate();
-            return currencyToDelete;
-        } catch (Exception e) {
-            throw ExceptionConverter.toCurrencyExchangerException(e);
-        }
+        return getCurrencyEntity(requestDto, DELETE_BY_CODE_SQL);
     }
 
     @Override
@@ -115,5 +100,17 @@ public class CurrencyDaoImpl implements CurrencyDao<CurrencyRequestDto, Currency
                 resultSet.getString(CODE_COLUMN_LABEL),
                 resultSet.getString(SIGN_COLUMN_LABEL)
         );
+    }
+
+    private CurrencyEntity getCurrencyEntity(CurrencyRequestDto requestDto, String sql) {
+        try (Connection connection = ConnectionProvider.get();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, requestDto.code());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            return buildCurrency(resultSet);
+        } catch (Exception e) {
+            throw ExceptionConverter.toCurrencyExchangerException(e);
+        }
     }
 }
