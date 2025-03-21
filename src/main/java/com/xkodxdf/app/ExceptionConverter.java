@@ -5,47 +5,38 @@ import com.xkodxdf.app.exception.*;
 import jakarta.servlet.http.HttpServletResponse;
 import org.postgresql.util.PSQLException;
 
-import java.sql.SQLException;
-
 public final class ExceptionConverter {
 
     private ExceptionConverter() {
     }
 
     public static ErrorResponse toErrorResponse(Throwable t) {
-        if (t instanceof InvalidInputDataException) {
-            return new ErrorResponse(HttpServletResponse.SC_BAD_REQUEST, ErrorMessage.INPUT_DATA_ERR);
+        if (t instanceof InvalidRequestDataException) {
+            return new ErrorResponse(HttpServletResponse.SC_BAD_REQUEST, t.getMessage());
         }
         if (t instanceof DataAlreadyExistException) {
-            return new ErrorResponse(HttpServletResponse.SC_CONFLICT, ErrorMessage.DUPLICATION_ERR);
+            return new ErrorResponse(HttpServletResponse.SC_CONFLICT, t.getMessage());
         }
-        if (t instanceof DataNotFoundExcepton) {
-            return new ErrorResponse(HttpServletResponse.SC_NOT_FOUND, ErrorMessage.NOT_FOUND_ERR);
+        if (t instanceof DataNotFoundException) {
+            return new ErrorResponse(HttpServletResponse.SC_NOT_FOUND, t.getMessage());
         }
-        if (t instanceof InvalidCurrencyCodeException) {
-            return new ErrorResponse(HttpServletResponse.SC_BAD_REQUEST, ErrorMessage.INVALID_CURRENCY_CODE);
-        }
-        if (t instanceof InvalidExchangeRateCodeException) {
-            return new ErrorResponse(HttpServletResponse.SC_BAD_REQUEST, ErrorMessage.INVALID_EXCHANGE_RATE_CODE_ERR);
-        }
-        if (t instanceof NotAllRequiredParametersPassedException) {
-            return new ErrorResponse(HttpServletResponse.SC_BAD_REQUEST, ErrorMessage.REQUIRED_PARAMS_ERR);
-        }
-        return new ErrorResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ErrorMessage.UNEXPECTED_ERR);
+        return new ErrorResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, t.getMessage());
     }
 
-    public static CurrencyExchangerException toCurrencyExchangerException(SQLException e) {
-        if (e instanceof PSQLException) {
-            String sqlState = e.getSQLState();
+    public static CurrencyExchangerException toCurrencyExchangerException(Exception e) {
+        if (e instanceof PSQLException psqlException) {
+            String sqlState = psqlException.getSQLState();
             String duplicateErrCode = "23505";
             String nullErrCode = "23502";
+            String emptyResultSet = "24000";
+
             if (duplicateErrCode.equals(sqlState)) {
                 return new DataAlreadyExistException(e);
             }
-            if (nullErrCode.equals(sqlState)) {
-                return new DataNotFoundExcepton();
+            if (nullErrCode.equals(sqlState) || emptyResultSet.equals(sqlState)) {
+                return new DataNotFoundException(e);
             }
         }
-        return new CurrencyExchangerException(e);
+        return new CurrencyExchangerException(e.getMessage(), e);
     }
 }

@@ -3,7 +3,6 @@ package com.xkodxdf.app.model.dao;
 
 import com.xkodxdf.app.ExceptionConverter;
 import com.xkodxdf.app.dto.CurrencyRequestDto;
-import com.xkodxdf.app.exception.DataNotFoundExcepton;
 import com.xkodxdf.app.model.dao.interfaces.CurrencyDao;
 import com.xkodxdf.app.model.entity.CurrencyEntity;
 import com.xkodxdf.app.util.ConnectionProvider;
@@ -63,7 +62,7 @@ public class CurrencyDaoImpl implements CurrencyDao<CurrencyRequestDto, Currency
             generatedKeys.next();
             long currencyId = generatedKeys.getLong(ID_COLUMN_LABEL);
             return new CurrencyEntity(currencyId, requestDto);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw ExceptionConverter.toCurrencyExchangerException(e);
         }
     }
@@ -74,11 +73,9 @@ public class CurrencyDaoImpl implements CurrencyDao<CurrencyRequestDto, Currency
              PreparedStatement preparedStatement = connection.prepareStatement(GET_BY_CODE_SQL)) {
             preparedStatement.setString(1, requestDto.code());
             ResultSet resultSet = preparedStatement.executeQuery();
-            if (!resultSet.next()) {
-                throw new DataNotFoundExcepton();
-            }
+            resultSet.next();
             return buildCurrency(resultSet);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw ExceptionConverter.toCurrencyExchangerException(e);
         }
     }
@@ -91,7 +88,7 @@ public class CurrencyDaoImpl implements CurrencyDao<CurrencyRequestDto, Currency
             CurrencyEntity currencyToDelete = get(requestDto);
             preparedStatement.executeUpdate();
             return currencyToDelete;
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw ExceptionConverter.toCurrencyExchangerException(e);
         }
     }
@@ -106,7 +103,7 @@ public class CurrencyDaoImpl implements CurrencyDao<CurrencyRequestDto, Currency
                 currencies.add(buildCurrency(resultSet));
             }
             return currencies;
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw ExceptionConverter.toCurrencyExchangerException(e);
         }
     }

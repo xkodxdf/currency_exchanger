@@ -17,6 +17,7 @@ public class AppContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         ServletContext servletContext = sce.getServletContext();
+        servletContext.setAttribute(VerifiedRequestDataProvider.class.getSimpleName(), new VerifiedRequestDataProvider());
         servletContext.setAttribute(Gson.class.getSimpleName(), new Gson());
         CurrencyService currencyService = new CurrencyService(CurrencyDaoImpl.getInstance());
         servletContext.setAttribute(CurrencyService.class.getSimpleName(), currencyService);

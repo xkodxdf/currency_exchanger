@@ -1,6 +1,7 @@
 package com.xkodxdf.app.model.entity;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
 
 public record ExchangeEntity(
@@ -32,6 +33,7 @@ public record ExchangeEntity(
     }
 
     private static BigDecimal exchangeCurrency(BigDecimal rate, BigDecimal amount) {
-        return rate.multiply(amount);
+        int numsAfterDecimal = 2;
+        return rate.multiply(amount).setScale(numsAfterDecimal, RoundingMode.HALF_EVEN);
     }
 }

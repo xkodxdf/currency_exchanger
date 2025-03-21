@@ -6,7 +6,7 @@ public final class ErrorMessage {
     }
 
     public static final String UNEXPECTED_ERR = "An unexpected error occurred";
-    public static final String INPUT_DATA_ERR = "Check that the forms are filled in correctly";
+    public static final String REQUEST_DATA_ERR = "Incorrect data in fields or url";
     public static final String DUPLICATION_ERR = "This data has already been added earlier";
     public static final String NOT_FOUND_ERR = "Unable to find data";
     public static final String REQUIRED_PARAMS_ERR = "All field must be filled with correct data";

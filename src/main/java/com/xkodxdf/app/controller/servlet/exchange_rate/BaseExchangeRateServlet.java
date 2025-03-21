@@ -11,7 +11,7 @@ public abstract class BaseExchangeRateServlet extends BaseServlet {
 
     @Override
     public void init(ServletConfig config) throws ServletException {
-        if (gson == null) {
+        if (!baseServletInitialized) {
             super.init(config);
         }
         if (exchangeRateService == null) {

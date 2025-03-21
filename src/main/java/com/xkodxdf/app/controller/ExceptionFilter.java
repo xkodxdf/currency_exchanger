@@ -30,11 +30,11 @@ public class ExceptionFilter implements Filter {
         }
     }
 
-    private void setErrorResponse(Throwable t, HttpServletResponse servletResponse) throws IOException {
-        servletResponse.setCharacterEncoding(StandardCharsets.UTF_8.name());
-        servletResponse.setContentType("text/html");
+    private void setErrorResponse(Throwable t, HttpServletResponse resp) throws IOException {
+        resp.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        resp.setContentType("text/html");
         ErrorResponse errorResponse = ExceptionConverter.toErrorResponse(t);
-        servletResponse.setStatus(errorResponse.getStatusCode());
-        servletResponse.getWriter().write(gson.toJson(errorResponse.getMessage()));
+        resp.setStatus(errorResponse.getStatusCode());
+        resp.getWriter().write(gson.toJson(errorResponse.getMessage()));
     }
 }

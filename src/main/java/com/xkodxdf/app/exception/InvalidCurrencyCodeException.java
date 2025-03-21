@@ -1,15 +1,22 @@
 package com.xkodxdf.app.exception;
 
-public class InvalidCurrencyCodeException extends CurrencyExchangerException {
+import com.xkodxdf.app.ErrorMessage;
+
+public class InvalidCurrencyCodeException extends InvalidRequestDataException {
 
     public InvalidCurrencyCodeException() {
+        super(ErrorMessage.INVALID_CURRENCY_CODE);
+    }
+
+    public InvalidCurrencyCodeException(Throwable t) {
+        super(ErrorMessage.INVALID_CURRENCY_CODE, t);
     }
 
     public InvalidCurrencyCodeException(String message) {
         super(message);
     }
 
-    public InvalidCurrencyCodeException(Exception e) {
-        super(e);
+    public InvalidCurrencyCodeException(String message, Throwable t) {
+        super(message, t);
     }
 }

@@ -1,5 +1,6 @@
 package com.xkodxdf.app.controller.servlet.currency;
 
+import com.xkodxdf.app.dto.CurrencyRequestDto;
 import com.xkodxdf.app.dto.CurrencyResponseDto;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,7 +20,8 @@ public class CurrenciesServlet extends BaseCurrencyServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        CurrencyResponseDto savedCurrency = currencyService.save(getCurrencyRequestDto(req));
-        setResponse(HttpServletResponse.SC_CREATED, savedCurrency, resp);
+        CurrencyRequestDto currencyDtoToSave = verifiedRequestData.getCurrencyRequestDtoForSaving(req);
+        CurrencyResponseDto savedCurrencyDto = currencyService.save(currencyDtoToSave);
+        setResponse(HttpServletResponse.SC_CREATED, savedCurrencyDto, resp);
     }
 }
