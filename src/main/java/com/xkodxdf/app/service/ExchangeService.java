@@ -9,7 +9,7 @@ import com.xkodxdf.app.model.entity.ExchangeRateEntity;
 
 import java.math.BigDecimal;
 
-public class ExchangeService {
+public class ExchangeService extends BaseService {
 
     private final ExchangeRateDao<ExchangeRateRequestDto, ExchangeRateEntity> exchangeRateDao;
 
@@ -17,9 +17,10 @@ public class ExchangeService {
         this.exchangeRateDao = exchangeRateDao;
     }
 
-    public ExchangeResponseDto getExchangeResponseDto(ExchangeRequestDto exchangeRequestDto) {
-        ExchangeRateEntity exchangeRate = exchangeRateDao.get(exchangeRequestDto.exchangeRateRequestDto());
-        BigDecimal amountToExchange = new BigDecimal(exchangeRequestDto.amount());
+    public ExchangeResponseDto getExchangeResponseDto(ExchangeRequestDto requestDtoToExchange) {
+        requestDtoValidator.validateExchangeRequestDto(requestDtoToExchange);
+        ExchangeRateEntity exchangeRate = findExchangeRate(requestDtoToExchange.exchangeRateRequestDto());
+        BigDecimal amountToExchange = new BigDecimal(requestDtoToExchange.amount());
         ExchangeEntity exchangeEntity = new ExchangeEntity(exchangeRate, amountToExchange);
         return new ExchangeResponseDto(exchangeEntity);
     }

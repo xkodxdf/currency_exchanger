@@ -7,7 +7,7 @@ import com.xkodxdf.app.model.entity.CurrencyEntity;
 
 import java.util.List;
 
-public class CurrencyService {
+public class CurrencyService extends BaseService {
 
     private final CurrencyDao<CurrencyRequestDto, CurrencyEntity> currencyDao;
 
@@ -15,19 +15,22 @@ public class CurrencyService {
         this.currencyDao = currencyDao;
     }
 
-    public CurrencyResponseDto save(CurrencyRequestDto requestDto) {
-        CurrencyEntity currencyEntity = currencyDao.save(requestDto);
-        return new CurrencyResponseDto(currencyEntity);
+    public CurrencyResponseDto save(CurrencyRequestDto requestDtoToSave) {
+        requestDtoValidator.validateCurrencyRequestDtoForSaving(requestDtoToSave);
+        CurrencyEntity savedCurrency = currencyDao.save(requestDtoToSave);
+        return new CurrencyResponseDto(savedCurrency);
     }
 
-    public CurrencyResponseDto get(CurrencyRequestDto requestDto) {
-        CurrencyEntity currencyEntity = currencyDao.get(requestDto);
-        return new CurrencyResponseDto(currencyEntity);
+    public CurrencyResponseDto get(CurrencyRequestDto requestDtoToReceive) {
+        requestDtoValidator.validateCurrencyRequestDtoForReceivengOrDeleting(requestDtoToReceive);
+        CurrencyEntity receivedCurrency = currencyDao.get(requestDtoToReceive);
+        return new CurrencyResponseDto(receivedCurrency);
     }
 
-    public CurrencyResponseDto delete(CurrencyRequestDto requestDto) {
-        CurrencyEntity currencyEntity = currencyDao.delete(requestDto);
-        return new CurrencyResponseDto(currencyEntity);
+    public CurrencyResponseDto delete(CurrencyRequestDto requestDtoToDelete) {
+        requestDtoValidator.validateCurrencyRequestDtoForReceivengOrDeleting(requestDtoToDelete);
+        CurrencyEntity deletedCurrency = currencyDao.delete(requestDtoToDelete);
+        return new CurrencyResponseDto(deletedCurrency);
     }
 
     public List<CurrencyResponseDto> getAll() {

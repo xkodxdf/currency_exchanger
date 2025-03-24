@@ -7,7 +7,7 @@ import com.xkodxdf.app.model.entity.ExchangeRateEntity;
 
 import java.util.List;
 
-public class ExchangeRateService {
+public class ExchangeRateService extends BaseService {
 
     private final ExchangeRateDao<ExchangeRateRequestDto, ExchangeRateEntity> exchangeRateDao;
 
@@ -15,19 +15,22 @@ public class ExchangeRateService {
         this.exchangeRateDao = exchangeRateDao;
     }
 
-    public ExchangeRateResponseDto save(ExchangeRateRequestDto requestDto) {
-        ExchangeRateEntity exchangeRateEntity = exchangeRateDao.save(requestDto);
-        return new ExchangeRateResponseDto(exchangeRateEntity);
+    public ExchangeRateResponseDto save(ExchangeRateRequestDto requestDtoToSave) {
+        requestDtoValidator.validateExchangeRateRequestDtoForSavingOrUpdating(requestDtoToSave);
+        ExchangeRateEntity savedExchangeRate = exchangeRateDao.save(requestDtoToSave);
+        return new ExchangeRateResponseDto(savedExchangeRate);
     }
 
-    public ExchangeRateResponseDto get(ExchangeRateRequestDto requestDto) {
-        ExchangeRateEntity exchangeRateEntity = exchangeRateDao.get(requestDto);
-        return new ExchangeRateResponseDto(exchangeRateEntity);
+    public ExchangeRateResponseDto get(ExchangeRateRequestDto requestDtoToReceive) {
+        requestDtoValidator.validateExchangeRateRequestDtoForReceiving(requestDtoToReceive);
+        ExchangeRateEntity receivedExchangeRate = exchangeRateDao.get(requestDtoToReceive);
+        return new ExchangeRateResponseDto(receivedExchangeRate);
     }
 
-    public ExchangeRateResponseDto update(ExchangeRateRequestDto requestDto) {
-        ExchangeRateEntity exchangeRateEntity = exchangeRateDao.update(requestDto);
-        return new ExchangeRateResponseDto(exchangeRateEntity);
+    public ExchangeRateResponseDto update(ExchangeRateRequestDto requestDtoToUpdate) {
+        requestDtoValidator.validateExchangeRateRequestDtoForSavingOrUpdating(requestDtoToUpdate);
+        ExchangeRateEntity updatedExchangeRate = exchangeRateDao.update(requestDtoToUpdate);
+        return new ExchangeRateResponseDto(updatedExchangeRate);
     }
 
     public List<ExchangeRateResponseDto> getAll() {
