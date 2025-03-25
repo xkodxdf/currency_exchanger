@@ -18,26 +18,6 @@ public class CurrencyDaoImpl implements CurrencyDao<CurrencyRequestDto, Currency
     private static final String CODE_COLUMN_LABEL = "code";
     private static final String NAME_COLUMN_LABEL = "full_name";
 
-    private static final String SAVE_SQL = """
-            INSERT INTO currency (sign, code, full_name)
-            VALUES (?, ?, ?);""";
-
-    private static final String GET_BY_CODE_SQL = """
-            SELECT id, sign, code, full_name
-            FROM currency
-            WHERE code = ?;""";
-
-    private static final String DELETE_BY_CODE_SQL = """
-            DELETE FROM currency
-            WHERE code = ?
-            RETURNING id, sign, code, full_name;
-            """;
-
-    private static final String GET_ALL_SQL = """
-            SELECT id, sign, code, full_name
-            FROM currency
-            ORDER BY code;
-            """;
 
     private static CurrencyDaoImpl INSTANCE;
 
@@ -54,7 +34,8 @@ public class CurrencyDaoImpl implements CurrencyDao<CurrencyRequestDto, Currency
     @Override
     public CurrencyEntity save(CurrencyRequestDto requestDto) {
         try (Connection connection = ConnectionProvider.get();
-             PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     CurrencySqlQueries.SAVE, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, requestDto.sign());
             preparedStatement.setString(2, requestDto.code());
             preparedStatement.setString(3, requestDto.name());
@@ -70,18 +51,18 @@ public class CurrencyDaoImpl implements CurrencyDao<CurrencyRequestDto, Currency
 
     @Override
     public CurrencyEntity get(CurrencyRequestDto requestDto) {
-        return getCurrencyEntity(requestDto, GET_BY_CODE_SQL);
+        return getCurrencyEntity(requestDto, CurrencySqlQueries.GET);
     }
 
     @Override
     public CurrencyEntity delete(CurrencyRequestDto requestDto) {
-        return getCurrencyEntity(requestDto, DELETE_BY_CODE_SQL);
+        return getCurrencyEntity(requestDto, CurrencySqlQueries.DELETE);
     }
 
     @Override
     public List<CurrencyEntity> getAll() {
         try (Connection connection = ConnectionProvider.get();
-             PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(CurrencySqlQueries.GET_ALL)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             List<CurrencyEntity> currencies = new ArrayList<>();
             while (resultSet.next()) {

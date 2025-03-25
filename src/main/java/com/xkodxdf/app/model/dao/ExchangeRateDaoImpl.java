@@ -14,53 +14,6 @@ import java.util.List;
 
 public class ExchangeRateDaoImpl implements ExchangeRateDao<ExchangeRateRequestDto, ExchangeRateEntity> {
 
-    private static final String SAVE_SQL = """
-            INSERT INTO exchange_rate (base_currency_id, target_currency_id, rate)
-            VALUES (
-            (SELECT id FROM currency WHERE code = ?),
-            (SELECT id FROM currency WHERE code = ?),
-            ?);
-            """;
-    private static final String GET_BY_CODES_SQL = """
-            SELECT
-                ex_r.id AS exchange_rate_id,
-                base_c.id AS base_currency_id,
-                base_c.full_name AS base_currency_name,
-                base_c.code AS base_currency_code,
-                base_c.sign AS base_currency_sign,
-                target_c.id AS target_currency_id,
-                target_c.full_name AS target_currency_name,
-                target_c.code AS target_currency_code,
-                target_c.sign AS target_currency_sign,
-                ex_r.rate
-            FROM exchange_rate AS ex_r
-            JOIN currency base_c ON ex_r.base_currency_id = base_c.id
-            JOIN currency target_c ON ex_r.target_currency_id = target_c.id
-            WHERE base_c.code = ? AND target_c.code = ?;
-            """;
-    private static final String GET_ALL_SQL = """
-            SELECT
-                ex_r.id AS exchange_rate_id,
-                base_c.id AS base_currency_id,
-                base_c.full_name AS base_currency_name,
-                base_c.code AS base_currency_code,
-                base_c.sign AS base_currency_sign,
-                target_c.id AS target_currency_id,
-                target_c.full_name AS target_currency_name,
-                target_c.code AS target_currency_code,
-                target_c.sign AS target_currency_sign,
-                ex_r.rate
-            FROM exchange_rate AS ex_r
-            JOIN currency base_c ON ex_r.base_currency_id = base_c.id
-            JOIN currency target_c ON ex_r.target_currency_id = target_c.id
-            ORDER BY base_c.code;
-            """;
-    private static final String UPDATE_SQL = """
-            UPDATE exchange_rate
-            SET rate = ?
-            WHERE base_currency_id = (SELECT id FROM currency WHERE code = ?)
-            AND target_currency_id = (SELECT id FROM currency WHERE code = ?);
-            """;
 
     private static ExchangeRateDaoImpl INSTANCE;
 
@@ -77,7 +30,8 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao<ExchangeRateRequestD
     @Override
     public ExchangeRateEntity save(ExchangeRateRequestDto exchangeRateRequestDto) {
         try (Connection connection = ConnectionProvider.get();
-             PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     ExchangeRateSqlQueries.SAVE, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, exchangeRateRequestDto.baseCurrencyCode());
             preparedStatement.setString(2, exchangeRateRequestDto.targetCurrencyCode());
             preparedStatement.setBigDecimal(3, new BigDecimal(exchangeRateRequestDto.rate()));
@@ -91,7 +45,8 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao<ExchangeRateRequestD
     @Override
     public ExchangeRateEntity get(ExchangeRateRequestDto exchangeRateRequestDto) {
         try (Connection connection = ConnectionProvider.get();
-             PreparedStatement preparedStatement = connection.prepareStatement(GET_BY_CODES_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     ExchangeRateSqlQueries.GET)) {
             preparedStatement.setString(1, exchangeRateRequestDto.baseCurrencyCode());
             preparedStatement.setString(2, exchangeRateRequestDto.targetCurrencyCode());
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -105,7 +60,8 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao<ExchangeRateRequestD
     @Override
     public ExchangeRateEntity update(ExchangeRateRequestDto exchangeRateRequestDto) {
         try (Connection connection = ConnectionProvider.get();
-             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     ExchangeRateSqlQueries.UPDATE)) {
             preparedStatement.setBigDecimal(1, new BigDecimal(exchangeRateRequestDto.rate()));
             preparedStatement.setString(2, exchangeRateRequestDto.baseCurrencyCode());
             preparedStatement.setString(3, exchangeRateRequestDto.targetCurrencyCode());
@@ -120,7 +76,8 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao<ExchangeRateRequestD
     public List<ExchangeRateEntity> getAll() {
         List<ExchangeRateEntity> exchangeRates = new ArrayList<>();
         try (Connection connection = ConnectionProvider.get();
-             PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     ExchangeRateSqlQueries.GET_ALL)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 exchangeRates.add(buildExchangeRateEntity(resultSet));
