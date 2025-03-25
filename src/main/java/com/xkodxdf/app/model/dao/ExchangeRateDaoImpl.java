@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ExchangeRateDaoImpl implements ExchangeRateDao<ExchangeRateRequestDto, ExchangeRateEntity> {
 
@@ -34,7 +35,8 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao<ExchangeRateRequestD
                      ExchangeRateSqlQueries.SAVE, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, exchangeRateRequestDto.baseCurrencyCode());
             preparedStatement.setString(2, exchangeRateRequestDto.targetCurrencyCode());
-            preparedStatement.setBigDecimal(3, new BigDecimal(exchangeRateRequestDto.rate()));
+            BigDecimal rate = new BigDecimal(exchangeRateRequestDto.rate());
+            preparedStatement.setBigDecimal(3, rate);
             preparedStatement.executeUpdate();
             return get(exchangeRateRequestDto);
         } catch (Exception e) {
@@ -58,11 +60,27 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao<ExchangeRateRequestD
     }
 
     @Override
+    public Optional<ExchangeRateEntity> find(ExchangeRateRequestDto requestDto) {
+        try (Connection connection = ConnectionProvider.get();
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     ExchangeRateSqlQueries.FIND)) {
+            preparedStatement.setString(1, requestDto.baseCurrencyCode());
+            preparedStatement.setString(2, requestDto.targetCurrencyCode());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            return Optional.of(buildExchangeRateEntity(resultSet));
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
     public ExchangeRateEntity update(ExchangeRateRequestDto exchangeRateRequestDto) {
         try (Connection connection = ConnectionProvider.get();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      ExchangeRateSqlQueries.UPDATE)) {
-            preparedStatement.setBigDecimal(1, new BigDecimal(exchangeRateRequestDto.rate()));
+            BigDecimal newRate = new BigDecimal(exchangeRateRequestDto.rate());
+            preparedStatement.setBigDecimal(1, newRate);
             preparedStatement.setString(2, exchangeRateRequestDto.baseCurrencyCode());
             preparedStatement.setString(3, exchangeRateRequestDto.targetCurrencyCode());
             preparedStatement.executeUpdate();
@@ -87,6 +105,7 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao<ExchangeRateRequestD
         }
         return exchangeRates;
     }
+
 
     private ExchangeRateEntity buildExchangeRateEntity(ResultSet resultSet) throws SQLException {
         return new ExchangeRateEntity(
