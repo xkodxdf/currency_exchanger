@@ -27,6 +27,8 @@ public class RequestDtoValidator {
     public void validateExchangeRateRequestDtoForSavingOrUpdating(ExchangeRateRequestDto requestDto) {
         validateExchangeRateRequestDtoForReceiving(requestDto);
         validateNumericString(requestDto.rate());
+        BigDecimal rate = new BigDecimal(requestDto.rate());
+        validateRate(rate);
     }
 
     public void validateExchangeRequestDto(ExchangeRequestDto exchangeRequestDto) {
@@ -58,10 +60,17 @@ public class RequestDtoValidator {
         }
     }
 
+    private void validateRate(BigDecimal rate) {
+        BigDecimal minRateValue = new BigDecimal("0.000001");
+        if (rate.compareTo(minRateValue) < 0) {
+            throw new InvalidRequestDataException(ErrorMessage.EXCHANGE_RATE_TOO_SMALL);
+        }
+    }
+
     private void validateAmountToConvert(BigDecimal amount) {
         BigDecimal minAmountValue = new BigDecimal("0.01");
         if (amount.compareTo(minAmountValue) < 0) {
-            throw new InvalidRequestDataException(ErrorMessage.AMOUNT_TO_CONVERT_TOO_SMALL_ERR);
+            throw new InvalidRequestDataException(ErrorMessage.AMOUNT_TO_CONVERT_TOO_SMALL);
         }
     }
 }
