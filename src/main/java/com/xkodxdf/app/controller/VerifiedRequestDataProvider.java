@@ -106,7 +106,7 @@ public class VerifiedRequestDataProvider {
         verifyDataPresence(requestName);
         String processedName = requestName.trim();
         if (processedName.length() > CURRENCY_NAME_MAX_LENGTH) {
-            throw new InvalidRequestDataException();
+            throw new InvalidRequestDataException(ErrorMessage.INVALID_CURRENCY_NAME);
         }
         return processedName;
     }
@@ -115,7 +115,7 @@ public class VerifiedRequestDataProvider {
         verifyDataPresence(requestSign);
         String processedSign = requestSign.trim().replace(" ", "");
         if (processedSign.length() > CURRENCY_SIGN_MAX_LENGTH) {
-            throw new InvalidRequestDataException();
+            throw new InvalidRequestDataException(ErrorMessage.INVALID_CURRENCY_SIGN);
         }
         return processedSign;
     }

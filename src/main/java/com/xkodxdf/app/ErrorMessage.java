@@ -5,6 +5,7 @@ public final class ErrorMessage {
     private ErrorMessage() {
     }
 
+
     public static final String UNEXPECTED_ERR = "An unexpected error occurred";
     public static final String REQUEST_DATA_ERR = "Incorrect data in fields or url";
     public static final String DUPLICATION_ERR = "This data has already been added earlier";
@@ -13,10 +14,11 @@ public final class ErrorMessage {
     public static final String AMOUNT_TO_CONVERT_TOO_SMALL = "Amount to convert must be greater or equals 0.01";
     public static final String EXCHANGE_RATE_TOO_SMALL = "Rate value must be greater or equals 0.000001";
     public static final String INVALID_CURRENCY_CODE = "Currency code must consist of three latin letters (ex. USD)";
+    public static final String INVALID_CURRENCY_SIGN = "Currency sign length must be 1-3 characters (ex. $, A$, CN$)";
     public static final String INVALID_CURRENCY_NAME = "Currency name may contain latin letters and spaces, " +
                                                        "maximum length 48 characters";
     public static final String BIG_DECIMAL_CONVERSION_ERR = "Incorrect data. Enter an integer or decimal number with a dot. " +
-                                                            "(ex. 112, 44.55, 0.011";
+                                                            "(ex. 112, 44.55, 0.011)";
     public static final String INVALID_NUMERIC_STRING_LENGTH = "Maximum number of characters for exchange rate " +
                                                                "or amount to exchange 17";
     public static final String INVALID_EXCHANGE_RATE_CODE = "Exchange rate code should consist of two currency codes," +
