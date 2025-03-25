@@ -73,16 +73,16 @@ public final class ExchangeRateSqlQueries {
                                            WHERE er1.target_currency_id = params.from_curr_id
                                              AND er2.base_currency_id = params.to_curr_id)
             
-                            SELECT r.id,
-                                   c_from.id        AS base_id,
-                                   c_from.code      AS base_code,
-                                   c_from.full_name AS base_name,
-                                   c_from.sign      AS base_sign,
+                            SELECT r.id AS exchange_rate_id,
+                                   c_from.id        AS base_currency_id,
+                                   c_from.full_name AS base_currency_name,
+                                   c_from.code      AS base_currency_code,
+                                   c_from.sign      AS base_currency_sign,
             
-                                   c_to.id          AS target_id,
-                                   c_to.code        AS target_code,
-                                   c_to.full_name   AS target_name,
-                                   c_to.sign        AS target_sign,
+                                   c_to.id          AS target_currency_id,
+                                   c_to.full_name   AS target_currency_name,
+                                   c_to.code        AS target_currency_code,
+                                   c_to.sign        AS target_currency_sign,
             
                                    r.rate
             
