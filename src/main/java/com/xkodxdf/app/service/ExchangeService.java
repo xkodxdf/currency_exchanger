@@ -46,7 +46,7 @@ public class ExchangeService extends BaseService {
     private Optional<ExchangeRateEntity> findReversedExchangeRate(ExchangeRateRequestDto requestDto) {
         try {
             ExchangeRateRequestDto invertedRequestDto = createInvertedExchangeRateRequestDto(requestDto);
-            ExchangeRateEntity exchangeRate = exchangeRateDao.get(createInvertedExchangeRateRequestDto(invertedRequestDto));
+            ExchangeRateEntity exchangeRate = exchangeRateDao.get(invertedRequestDto);
             return Optional.of(createInvertedExchangeRate(exchangeRate));
         } catch (DataNotFoundException e) {
             return Optional.empty();
