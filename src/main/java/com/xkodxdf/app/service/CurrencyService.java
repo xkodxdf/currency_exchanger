@@ -22,13 +22,13 @@ public class CurrencyService extends BaseService {
     }
 
     public CurrencyResponseDto get(CurrencyRequestDto requestDtoToReceive) {
-        requestDtoValidator.validateCurrencyRequestDtoForReceivengOrDeleting(requestDtoToReceive);
+        requestDtoValidator.validateCurrencyRequestDtoForReceivingOrDeleting(requestDtoToReceive);
         CurrencyEntity receivedCurrency = currencyDao.get(requestDtoToReceive);
         return new CurrencyResponseDto(receivedCurrency);
     }
 
     public CurrencyResponseDto delete(CurrencyRequestDto requestDtoToDelete) {
-        requestDtoValidator.validateCurrencyRequestDtoForReceivengOrDeleting(requestDtoToDelete);
+        requestDtoValidator.validateCurrencyRequestDtoForReceivingOrDeleting(requestDtoToDelete);
         CurrencyEntity deletedCurrency = currencyDao.delete(requestDtoToDelete);
         return new CurrencyResponseDto(deletedCurrency);
     }

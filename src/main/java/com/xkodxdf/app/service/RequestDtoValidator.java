@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 
 public class RequestDtoValidator {
 
-    public void validateCurrencyRequestDtoForReceivengOrDeleting(CurrencyRequestDto requestDto) {
+    public void validateCurrencyRequestDtoForReceivingOrDeleting(CurrencyRequestDto requestDto) {
         validateCurrencyCode(requestDto.code());
     }
 
@@ -52,7 +52,7 @@ public class RequestDtoValidator {
 
     private void validateNumericString(String numericString) {
         try {
-            BigDecimal decimal = new BigDecimal(numericString);
+            new BigDecimal(numericString);
         } catch (NumberFormatException e) {
             throw new InvalidRequestDataException(ErrorMessage.BIG_DECIMAL_CONVERSION_ERR);
         }
