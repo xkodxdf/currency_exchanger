@@ -127,7 +127,7 @@ public class VerifiedRequestDataProvider {
                 .replace(" ", "")
                 .toUpperCase();
         if (processedCodePair.length() != CURRENCY_CODE_VALID_LENGTH * 2) {
-            throw new InvalidRequestDataException(ErrorMessage.INVALID_EXCHANGE_RATE_CODE_ERR);
+            throw new InvalidRequestDataException(ErrorMessage.INVALID_EXCHANGE_RATE_CODE);
         }
         return processedCodePair;
     }
