@@ -66,6 +66,7 @@ public class VerifiedRequestDataProvider {
         String targetCurrencyCode = req.getParameter(EXCHANGE_RATE_TARGET_CURRENCY_PARAMETER);
         String rate = req.getParameter(EXCHANGE_RATE_RATE_PARAMETER);
         verifyNumericStringLength(rate);
+        rate = rate.trim();
         return new ExchangeRateRequestDto(
                 getProcessedCurrencyCode(baseCurrencyCode),
                 getProcessedCurrencyCode(targetCurrencyCode),
@@ -87,8 +88,11 @@ public class VerifiedRequestDataProvider {
         String baseCurrencyCode = req.getParameter(EXCHANGE_FROM_PARAMETER);
         String targetCurrencyCode = req.getParameter(EXCHANGE_TO_PARAMETER);
         String amountToExchange = req.getParameter(EXCHANGE_AMOUNT_PARAMETER);
+        verifyNumericStringLength(amountToExchange);
+        amountToExchange = amountToExchange.trim();
         ExchangeRateRequestDto exchangeRateRequestDto = getExchangeRateRequestDtoForReceiving(
-                baseCurrencyCode + targetCurrencyCode);
+                baseCurrencyCode + targetCurrencyCode
+        );
         verifyNumericStringLength(amountToExchange);
         return new ExchangeRequestDto(exchangeRateRequestDto, amountToExchange);
     }
@@ -138,7 +142,7 @@ public class VerifiedRequestDataProvider {
     private String getProcessedRateForUpdate(HttpServletRequest req) {
         String requestBody = getRequestBodyAsString(req);
         if (requestBody.contains(UPDATE_RATE_PARAMETER)) {
-            String rateValue = requestBody.replace(UPDATE_RATE_PARAMETER, "");
+            String rateValue = requestBody.replace(UPDATE_RATE_PARAMETER, "").trim();
             verifyNumericStringLength(rateValue);
             return rateValue;
         }
