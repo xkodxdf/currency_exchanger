@@ -23,6 +23,9 @@ public class VerifiedRequestDataProvider {
     private static final String EXCHANGE_RATE_BASE_CURRENCY_PARAMETER = "baseCurrencyCode";
     private static final String EXCHANGE_RATE_TARGET_CURRENCY_PARAMETER = "targetCurrencyCode";
     private static final String EXCHANGE_RATE_RATE_PARAMETER = "rate";
+    private static final String EXCHANGE_FROM_PARAMETER = "from";
+    private static final String EXCHANGE_TO_PARAMETER = "to";
+    private static final String EXCHANGE_AMOUNT_PARAMETER = "amount";
     private static final String UPDATE_RATE_PARAMETER = "rate=";
 
 
@@ -81,9 +84,9 @@ public class VerifiedRequestDataProvider {
     }
 
     public ExchangeRequestDto getExchangeRequestDto(HttpServletRequest req) {
-        String baseCurrencyCode = req.getParameter("from");
-        String targetCurrencyCode = req.getParameter("to");
-        String amountToExchange = req.getParameter("amount");
+        String baseCurrencyCode = req.getParameter(EXCHANGE_FROM_PARAMETER);
+        String targetCurrencyCode = req.getParameter(EXCHANGE_TO_PARAMETER);
+        String amountToExchange = req.getParameter(EXCHANGE_AMOUNT_PARAMETER);
         ExchangeRateRequestDto exchangeRateRequestDto = getExchangeRateRequestDtoForReceiving(
                 baseCurrencyCode + targetCurrencyCode);
         verifyNumericStringLength(amountToExchange);
