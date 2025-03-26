@@ -13,17 +13,17 @@ import java.io.IOException;
 
 public class VerifiedRequestDataProvider {
 
-    public static final int CURRENCY_CODE_VALID_LENGTH = 3;
-    public static final int CURRENCY_NAME_MAX_LENGTH = 48;
-    public static final int CURRENCY_SIGN_MAX_LENGTH = 3;
-    public static final int NUMERIC_STRING_MAX_LENGTH = 16;
-    public static final String CURRENCY_CODE_PARAMETER = "code";
-    public static final String CURRENCY_NAME_PARAMETER = "name";
-    public static final String CURRENCY_SIGN_PARAMETER = "sign";
-    public static final String EXCHANGE_RATE_BASE_CURRENCY_PARAMETER = "baseCurrencyCode";
-    public static final String EXCHANGE_RATE_TARGET_CURRENCY_PARAMETER = "targetCurrencyCode";
-    public static final String EXCHANGE_RATE_RATE_PARAMETER = "rate";
-    public static final String UPDATE_RATE_PARAMETER = "rate=";
+    private static final int CURRENCY_CODE_VALID_LENGTH = 3;
+    private static final int CURRENCY_NAME_MAX_LENGTH = 48;
+    private static final int CURRENCY_SIGN_MAX_LENGTH = 3;
+    private static final int NUMERIC_STRING_MAX_LENGTH = 16;
+    private static final String CURRENCY_CODE_PARAMETER = "code";
+    private static final String CURRENCY_NAME_PARAMETER = "name";
+    private static final String CURRENCY_SIGN_PARAMETER = "sign";
+    private static final String EXCHANGE_RATE_BASE_CURRENCY_PARAMETER = "baseCurrencyCode";
+    private static final String EXCHANGE_RATE_TARGET_CURRENCY_PARAMETER = "targetCurrencyCode";
+    private static final String EXCHANGE_RATE_RATE_PARAMETER = "rate";
+    private static final String UPDATE_RATE_PARAMETER = "rate=";
 
 
     public void verifyDataPresence(String... data) {
