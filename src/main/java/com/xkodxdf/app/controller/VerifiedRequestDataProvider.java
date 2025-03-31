@@ -16,7 +16,7 @@ public class VerifiedRequestDataProvider {
     private static final int CURRENCY_CODE_VALID_LENGTH = 3;
     private static final int CURRENCY_NAME_MAX_LENGTH = 48;
     private static final int CURRENCY_SIGN_MAX_LENGTH = 3;
-    private static final int NUMERIC_STRING_MAX_LENGTH = 16;
+    private static final int RATE_STRING_MAX_LENGTH = 12;
     private static final String CURRENCY_CODE_PARAMETER = "code";
     private static final String CURRENCY_NAME_PARAMETER = "name";
     private static final String CURRENCY_SIGN_PARAMETER = "sign";
@@ -65,7 +65,7 @@ public class VerifiedRequestDataProvider {
         String baseCurrencyCode = req.getParameter(EXCHANGE_RATE_BASE_CURRENCY_PARAMETER);
         String targetCurrencyCode = req.getParameter(EXCHANGE_RATE_TARGET_CURRENCY_PARAMETER);
         String rate = req.getParameter(EXCHANGE_RATE_RATE_PARAMETER);
-        verifyNumericStringLength(rate);
+        verifyRateStringLength(rate);
         rate = rate.trim();
         return new ExchangeRateRequestDto(
                 getProcessedCurrencyCode(baseCurrencyCode),
@@ -88,12 +88,11 @@ public class VerifiedRequestDataProvider {
         String baseCurrencyCode = req.getParameter(EXCHANGE_FROM_PARAMETER);
         String targetCurrencyCode = req.getParameter(EXCHANGE_TO_PARAMETER);
         String amountToExchange = req.getParameter(EXCHANGE_AMOUNT_PARAMETER);
-        verifyNumericStringLength(amountToExchange);
+        verifyDataPresence(amountToExchange);
         amountToExchange = amountToExchange.trim();
         ExchangeRateRequestDto exchangeRateRequestDto = getExchangeRateRequestDtoForReceiving(
                 baseCurrencyCode + targetCurrencyCode
         );
-        verifyNumericStringLength(amountToExchange);
         return new ExchangeRequestDto(exchangeRateRequestDto, amountToExchange);
     }
 
@@ -143,15 +142,16 @@ public class VerifiedRequestDataProvider {
         String requestBody = getRequestBodyAsString(req);
         if (requestBody.contains(UPDATE_RATE_PARAMETER)) {
             String rateValue = requestBody.replace(UPDATE_RATE_PARAMETER, "").trim();
-            verifyNumericStringLength(rateValue);
+            verifyRateStringLength(rateValue);
             return rateValue;
         }
         throw new CurrencyExchangerException();
     }
 
-    private void verifyNumericStringLength(String numericString) {
-        verifyDataPresence(numericString);
-        if (numericString.length() > NUMERIC_STRING_MAX_LENGTH) {
+    private void verifyRateStringLength(String rateString) {
+        verifyDataPresence(rateString);
+        rateString = rateString.replace(".", "");
+        if (rateString.length() > RATE_STRING_MAX_LENGTH) {
             throw new InvalidRequestDataException(ErrorMessage.INVALID_NUMERIC_STRING_LENGTH);
         }
     }
