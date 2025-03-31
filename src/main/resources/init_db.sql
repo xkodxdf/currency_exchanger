@@ -19,7 +19,7 @@ CREATE TABLE exchange_rate
     id                 SERIAL PRIMARY KEY,
     base_currency_id   INTEGER        NOT NULL REFERENCES currency (id) ON DELETE CASCADE,
     target_currency_id INTEGER        NOT NULL REFERENCES currency (id) ON DELETE CASCADE,
-    rate               DECIMAL(10, 6) NOT NULL
+    rate               DECIMAL(12, 6) NOT NULL
 );
 
 CREATE UNIQUE INDEX exchange_rate_base_target_index
