@@ -62,8 +62,9 @@ public class RequestDtoValidator {
 
     private void validateRate(BigDecimal rate) {
         BigDecimal minRateValue = new BigDecimal("0.000001");
-        if (rate.compareTo(minRateValue) < 0) {
-            throw new InvalidRequestDataException(ErrorMessage.EXCHANGE_RATE_TOO_SMALL);
+        BigDecimal maxRateValue = new BigDecimal(("999999.999999"));
+        if (rate.compareTo(minRateValue) < 0 || rate.compareTo(maxRateValue) > 0) {
+            throw new InvalidRequestDataException(ErrorMessage.EXCHANGE_RATE_OUT_OF_BOUND);
         }
     }
 
