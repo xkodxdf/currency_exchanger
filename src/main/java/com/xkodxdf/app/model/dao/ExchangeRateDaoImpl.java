@@ -6,6 +6,7 @@ import com.xkodxdf.app.model.dao.interfaces.ExchangeRateDao;
 import com.xkodxdf.app.model.entity.CurrencyEntity;
 import com.xkodxdf.app.model.entity.ExchangeRateEntity;
 
+import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
@@ -14,15 +15,15 @@ import java.util.Optional;
 
 public class ExchangeRateDaoImpl implements ExchangeRateDao<ExchangeRateRequestDto, ExchangeRateEntity> {
 
-    private final ConnectionProvider connectionProvider;
+    private final DataSource dataSource;
 
-    public ExchangeRateDaoImpl(ConnectionProvider connectionProvider) {
-        this.connectionProvider = connectionProvider;
+    public ExchangeRateDaoImpl(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     @Override
     public ExchangeRateEntity save(ExchangeRateRequestDto exchangeRateRequestDto) {
-        try (Connection connection = connectionProvider.get();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      ExchangeRateSqlQueries.SAVE, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, exchangeRateRequestDto.baseCurrencyCode());
@@ -38,7 +39,7 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao<ExchangeRateRequestD
 
     @Override
     public ExchangeRateEntity get(ExchangeRateRequestDto exchangeRateRequestDto) {
-        try (Connection connection = connectionProvider.get();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      ExchangeRateSqlQueries.GET)) {
             preparedStatement.setString(1, exchangeRateRequestDto.baseCurrencyCode());
@@ -53,7 +54,7 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao<ExchangeRateRequestD
 
     @Override
     public Optional<ExchangeRateEntity> find(ExchangeRateRequestDto requestDto) {
-        try (Connection connection = connectionProvider.get();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      ExchangeRateSqlQueries.FIND)) {
             preparedStatement.setString(1, requestDto.baseCurrencyCode());
@@ -68,7 +69,7 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao<ExchangeRateRequestD
 
     @Override
     public ExchangeRateEntity update(ExchangeRateRequestDto exchangeRateRequestDto) {
-        try (Connection connection = connectionProvider.get();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      ExchangeRateSqlQueries.UPDATE)) {
             BigDecimal newRate = new BigDecimal(exchangeRateRequestDto.rate());
@@ -85,7 +86,7 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao<ExchangeRateRequestD
     @Override
     public List<ExchangeRateEntity> getAll() {
         List<ExchangeRateEntity> exchangeRates = new ArrayList<>();
-        try (Connection connection = connectionProvider.get();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      ExchangeRateSqlQueries.GET_ALL)) {
             ResultSet resultSet = preparedStatement.executeQuery();

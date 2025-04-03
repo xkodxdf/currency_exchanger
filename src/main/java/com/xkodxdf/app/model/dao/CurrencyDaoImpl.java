@@ -6,6 +6,7 @@ import com.xkodxdf.app.dto.CurrencyRequestDto;
 import com.xkodxdf.app.model.dao.interfaces.CurrencyDao;
 import com.xkodxdf.app.model.entity.CurrencyEntity;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,15 +18,15 @@ public class CurrencyDaoImpl implements CurrencyDao<CurrencyRequestDto, Currency
     private static final String CODE_COLUMN_LABEL = "code";
     private static final String NAME_COLUMN_LABEL = "full_name";
 
-    private final ConnectionProvider connectionProvider;
+    private final DataSource dataSource;
 
-    public CurrencyDaoImpl(ConnectionProvider connectionProvider) {
-        this.connectionProvider = connectionProvider;
+    public CurrencyDaoImpl(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     @Override
     public CurrencyEntity save(CurrencyRequestDto requestDto) {
-        try (Connection connection = connectionProvider.get();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      CurrencySqlQueries.SAVE, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, requestDto.sign());
@@ -53,7 +54,7 @@ public class CurrencyDaoImpl implements CurrencyDao<CurrencyRequestDto, Currency
 
     @Override
     public List<CurrencyEntity> getAll() {
-        try (Connection connection = connectionProvider.get();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(CurrencySqlQueries.GET_ALL)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             List<CurrencyEntity> currencies = new ArrayList<>();
@@ -76,7 +77,7 @@ public class CurrencyDaoImpl implements CurrencyDao<CurrencyRequestDto, Currency
     }
 
     private CurrencyEntity getCurrencyEntity(CurrencyRequestDto requestDto, String sql) {
-        try (Connection connection = connectionProvider.get();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, requestDto.code());
             ResultSet resultSet = preparedStatement.executeQuery();

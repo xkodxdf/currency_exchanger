@@ -1,16 +1,15 @@
 package com.xkodxdf.app.controller;
 
 import com.google.gson.Gson;
-import com.xkodxdf.app.ErrorMessage;
 import com.xkodxdf.app.exception.CurrencyExchangerException;
-import com.xkodxdf.app.model.dao.ConnectionProvider;
 import com.xkodxdf.app.model.dao.CurrencyDaoImpl;
 import com.xkodxdf.app.model.dao.ExchangeRateDaoImpl;
+import com.xkodxdf.app.model.dao.HikariCPDataSource;
 import com.xkodxdf.app.service.CurrencyService;
 import com.xkodxdf.app.service.ExchangeRateService;
 import com.xkodxdf.app.service.ExchangeService;
 import com.xkodxdf.app.service.RequestDtoValidator;
-import jakarta.servlet.ServletContext;
+import com.zaxxer.hikari.HikariDataSource;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
@@ -27,7 +26,7 @@ public class AppContextListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        closeDbConnectionPool(sce);
+        closeDbConnections(sce);
         deregisterDbDriver();
     }
 
@@ -35,26 +34,25 @@ public class AppContextListener implements ServletContextListener {
         var servletContext = sce.getServletContext();
         servletContext.setAttribute(VerifiedRequestDataProvider.class.getSimpleName(), new VerifiedRequestDataProvider());
         servletContext.setAttribute(Gson.class.getSimpleName(), new Gson());
-        var connectionProvider = new ConnectionProvider();
-        servletContext.setAttribute(ConnectionProvider.class.getSimpleName(), connectionProvider);
+        var dataSource = HikariCPDataSource.getDataSource();
+        servletContext.setAttribute(HikariDataSource.class.getSimpleName(), dataSource);
         var requestDtoValidator = new RequestDtoValidator();
-        var currencyService = new CurrencyService(new CurrencyDaoImpl(connectionProvider), requestDtoValidator);
+        var currencyService = new CurrencyService(new CurrencyDaoImpl(dataSource), requestDtoValidator);
         servletContext.setAttribute(CurrencyService.class.getSimpleName(), currencyService);
-        var exchangeRateDao = new ExchangeRateDaoImpl(connectionProvider);
+        var exchangeRateDao = new ExchangeRateDaoImpl(dataSource);
         var exchangeRateService = new ExchangeRateService(exchangeRateDao, requestDtoValidator);
         servletContext.setAttribute(ExchangeRateService.class.getSimpleName(), exchangeRateService);
         var exchangeService = new ExchangeService(exchangeRateDao, requestDtoValidator);
         servletContext.setAttribute(ExchangeService.class.getSimpleName(), exchangeService);
     }
 
-    private void closeDbConnectionPool(ServletContextEvent sce) {
+    private void closeDbConnections(ServletContextEvent sce) {
+        Object attribute = sce.getServletContext().getAttribute(HikariDataSource.class.getSimpleName());
         try {
-            ServletContext servletContext = sce.getServletContext();
-            Object attribute = servletContext.getAttribute(ConnectionProvider.class.getSimpleName());
-            ConnectionProvider connectionProvider = (ConnectionProvider) attribute;
-            connectionProvider.closeConnections();
+            HikariDataSource dataSource = (HikariDataSource) attribute;
+            dataSource.close();
         } catch (Exception e) {
-            throw new CurrencyExchangerException(ErrorMessage.UNEXPECTED_ERR, e);
+            throw new CurrencyExchangerException();
         }
     }
 
@@ -63,7 +61,7 @@ public class AppContextListener implements ServletContextListener {
             String driverUrl = "jdbc:postgresql://";
             DriverManager.deregisterDriver(DriverManager.getDriver(driverUrl));
         } catch (Exception e) {
-            throw new CurrencyExchangerException(ErrorMessage.UNEXPECTED_ERR, e);
+            throw new CurrencyExchangerException(e);
         }
     }
 }
