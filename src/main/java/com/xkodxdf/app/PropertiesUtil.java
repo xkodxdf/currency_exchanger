@@ -1,4 +1,4 @@
-package com.xkodxdf.app.util;
+package com.xkodxdf.app;
 
 import com.xkodxdf.app.exception.CurrencyExchangerException;
 
@@ -17,11 +17,12 @@ public final class PropertiesUtil {
     private PropertiesUtil() {
     }
 
-    public static String getProperty(Keys key) {
+    public static String getProperty(PropertyKeys key) {
         return switch (key) {
-            case DB_URL -> PROPERTIES.getProperty(Keys.DB_URL.getValue());
-            case DB_USER -> PROPERTIES.getProperty(Keys.DB_USER.getValue());
-            case DB_PASSWORD -> PROPERTIES.getProperty(Keys.DB_PASSWORD.getValue());
+            case DB_URL -> PROPERTIES.getProperty(PropertyKeys.DB_URL.getKey());
+            case DB_USER -> PROPERTIES.getProperty(PropertyKeys.DB_USER.getKey());
+            case DB_PASSWORD -> PROPERTIES.getProperty(PropertyKeys.DB_PASSWORD.getKey());
+            case DB_POOL_SIZE -> PROPERTIES.getProperty(PropertyKeys.DB_POOL_SIZE.getKey());
         };
     }
 
@@ -30,23 +31,7 @@ public final class PropertiesUtil {
         try (InputStream inputStream = PropertiesUtil.class.getClassLoader().getResourceAsStream(fileName)) {
             PROPERTIES.load(inputStream);
         } catch (IOException e) {
-            throw new CurrencyExchangerException(e);
-        }
-    }
-
-    public enum Keys {
-        DB_URL("db.url"),
-        DB_USER("db.user"),
-        DB_PASSWORD("db.password");
-
-        private final String value;
-
-        public String getValue() {
-            return value;
-        }
-
-        Keys(String value) {
-            this.value = value;
+            throw new CurrencyExchangerException();
         }
     }
 }

@@ -5,7 +5,6 @@ import com.xkodxdf.app.ExceptionConverter;
 import com.xkodxdf.app.dto.CurrencyRequestDto;
 import com.xkodxdf.app.model.dao.interfaces.CurrencyDao;
 import com.xkodxdf.app.model.entity.CurrencyEntity;
-import com.xkodxdf.app.util.ConnectionProvider;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -18,22 +17,15 @@ public class CurrencyDaoImpl implements CurrencyDao<CurrencyRequestDto, Currency
     private static final String CODE_COLUMN_LABEL = "code";
     private static final String NAME_COLUMN_LABEL = "full_name";
 
+    private final ConnectionProvider connectionProvider;
 
-    private static CurrencyDaoImpl INSTANCE;
-
-    private CurrencyDaoImpl() {
-    }
-
-    public static CurrencyDaoImpl getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new CurrencyDaoImpl();
-        }
-        return INSTANCE;
+    public CurrencyDaoImpl(ConnectionProvider connectionProvider) {
+        this.connectionProvider = connectionProvider;
     }
 
     @Override
     public CurrencyEntity save(CurrencyRequestDto requestDto) {
-        try (Connection connection = ConnectionProvider.get();
+        try (Connection connection = connectionProvider.get();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      CurrencySqlQueries.SAVE, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, requestDto.sign());
@@ -61,7 +53,7 @@ public class CurrencyDaoImpl implements CurrencyDao<CurrencyRequestDto, Currency
 
     @Override
     public List<CurrencyEntity> getAll() {
-        try (Connection connection = ConnectionProvider.get();
+        try (Connection connection = connectionProvider.get();
              PreparedStatement preparedStatement = connection.prepareStatement(CurrencySqlQueries.GET_ALL)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             List<CurrencyEntity> currencies = new ArrayList<>();
@@ -84,7 +76,7 @@ public class CurrencyDaoImpl implements CurrencyDao<CurrencyRequestDto, Currency
     }
 
     private CurrencyEntity getCurrencyEntity(CurrencyRequestDto requestDto, String sql) {
-        try (Connection connection = ConnectionProvider.get();
+        try (Connection connection = connectionProvider.get();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, requestDto.code());
             ResultSet resultSet = preparedStatement.executeQuery();

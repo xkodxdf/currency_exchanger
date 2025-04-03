@@ -331,6 +331,17 @@ th {
   border-width: 0;
 }
 
+.delete-column {
+  width: 80px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .delete-column {
+    width: 20px;
+  }
+}
+
 label {
   display: inline-block;
 }

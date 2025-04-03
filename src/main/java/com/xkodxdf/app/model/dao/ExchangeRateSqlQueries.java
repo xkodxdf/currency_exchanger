@@ -12,6 +12,7 @@ public final class ExchangeRateSqlQueries {
             (SELECT id FROM currency WHERE code = ?),
             ?);
             """;
+
     static final String GET = """
             SELECT
                 ex_r.id AS exchange_rate_id,
@@ -29,6 +30,7 @@ public final class ExchangeRateSqlQueries {
             JOIN currency target_c ON ex_r.target_currency_id = target_c.id
             WHERE base_c.code = ? AND target_c.code = ?;
             """;
+
     static final String FIND = """
             WITH params AS (SELECT (SELECT id FROM currency WHERE code = ?) AS from_curr_id,
                                                    (SELECT id FROM currency WHERE code = ?) AS to_curr_id),
@@ -90,12 +92,14 @@ public final class ExchangeRateSqlQueries {
                                      JOIN currency c_from ON r.base_currency_id = c_from.id
                                      JOIN currency c_to ON r.target_currency_id = c_to.id;
             """;
+
     static final String UPDATE = """
             UPDATE exchange_rate
             SET rate = ?
             WHERE base_currency_id = (SELECT id FROM currency WHERE code = ?)
             AND target_currency_id = (SELECT id FROM currency WHERE code = ?);
             """;
+
     static final String GET_ALL = """
             SELECT
                 ex_r.id AS exchange_rate_id,
