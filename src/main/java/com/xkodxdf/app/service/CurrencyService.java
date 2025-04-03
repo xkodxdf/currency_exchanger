@@ -7,12 +7,15 @@ import com.xkodxdf.app.model.entity.CurrencyEntity;
 
 import java.util.List;
 
-public class CurrencyService extends BaseService {
+public class CurrencyService {
 
     private final CurrencyDao<CurrencyRequestDto, CurrencyEntity> currencyDao;
+    private final RequestDtoValidator requestDtoValidator;
 
-    public CurrencyService(CurrencyDao<CurrencyRequestDto, CurrencyEntity> currencyDao) {
+    public CurrencyService(CurrencyDao<CurrencyRequestDto, CurrencyEntity> currencyDao,
+                           RequestDtoValidator requestDtoValidator) {
         this.currencyDao = currencyDao;
+        this.requestDtoValidator = requestDtoValidator;
     }
 
     public CurrencyResponseDto save(CurrencyRequestDto requestDtoToSave) {

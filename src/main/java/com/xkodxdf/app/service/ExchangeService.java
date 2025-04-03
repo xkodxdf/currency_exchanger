@@ -11,12 +11,15 @@ import com.xkodxdf.app.model.entity.ExchangeRateEntity;
 
 import java.math.BigDecimal;
 
-public class ExchangeService extends BaseService {
+public class ExchangeService {
 
     private final ExchangeRateDao<ExchangeRateRequestDto, ExchangeRateEntity> exchangeRateDao;
+    private final RequestDtoValidator requestDtoValidator;
 
-    public ExchangeService(ExchangeRateDao<ExchangeRateRequestDto, ExchangeRateEntity> exchangeRateDao) {
+    public ExchangeService(ExchangeRateDao<ExchangeRateRequestDto, ExchangeRateEntity> exchangeRateDao,
+                           RequestDtoValidator requestDtoValidator) {
         this.exchangeRateDao = exchangeRateDao;
+        this.requestDtoValidator = requestDtoValidator;
     }
 
     public ExchangeResponseDto getExchangeResponseDto(ExchangeRequestDto requestDtoToExchange) {

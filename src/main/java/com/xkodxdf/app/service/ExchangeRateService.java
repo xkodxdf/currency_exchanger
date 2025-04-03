@@ -7,12 +7,15 @@ import com.xkodxdf.app.model.entity.ExchangeRateEntity;
 
 import java.util.List;
 
-public class ExchangeRateService extends BaseService {
+public class ExchangeRateService {
 
     private final ExchangeRateDao<ExchangeRateRequestDto, ExchangeRateEntity> exchangeRateDao;
+    private final RequestDtoValidator requestDtoValidator;
 
-    public ExchangeRateService(ExchangeRateDao<ExchangeRateRequestDto, ExchangeRateEntity> exchangeRateDao) {
+    public ExchangeRateService(ExchangeRateDao<ExchangeRateRequestDto, ExchangeRateEntity> exchangeRateDao,
+                               RequestDtoValidator requestDtoValidator) {
         this.exchangeRateDao = exchangeRateDao;
+        this.requestDtoValidator = requestDtoValidator;
     }
 
     public ExchangeRateResponseDto save(ExchangeRateRequestDto requestDtoToSave) {
