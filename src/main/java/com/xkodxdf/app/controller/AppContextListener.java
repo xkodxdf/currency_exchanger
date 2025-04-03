@@ -9,6 +9,7 @@ import com.xkodxdf.app.model.dao.ExchangeRateDaoImpl;
 import com.xkodxdf.app.service.CurrencyService;
 import com.xkodxdf.app.service.ExchangeRateService;
 import com.xkodxdf.app.service.ExchangeService;
+import com.xkodxdf.app.service.RequestDtoValidator;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
@@ -36,12 +37,13 @@ public class AppContextListener implements ServletContextListener {
         servletContext.setAttribute(Gson.class.getSimpleName(), new Gson());
         var connectionProvider = new ConnectionProvider();
         servletContext.setAttribute(ConnectionProvider.class.getSimpleName(), connectionProvider);
-        var currencyService = new CurrencyService(new CurrencyDaoImpl(connectionProvider));
+        var requestDtoValidator = new RequestDtoValidator();
+        var currencyService = new CurrencyService(new CurrencyDaoImpl(connectionProvider), requestDtoValidator);
         servletContext.setAttribute(CurrencyService.class.getSimpleName(), currencyService);
         var exchangeRateDao = new ExchangeRateDaoImpl(connectionProvider);
-        var exchangeRateService = new ExchangeRateService(exchangeRateDao);
+        var exchangeRateService = new ExchangeRateService(exchangeRateDao, requestDtoValidator);
         servletContext.setAttribute(ExchangeRateService.class.getSimpleName(), exchangeRateService);
-        var exchangeService = new ExchangeService(exchangeRateDao);
+        var exchangeService = new ExchangeService(exchangeRateDao, requestDtoValidator);
         servletContext.setAttribute(ExchangeService.class.getSimpleName(), exchangeService);
     }
 
