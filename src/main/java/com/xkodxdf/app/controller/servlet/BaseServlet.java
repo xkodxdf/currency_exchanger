@@ -12,9 +12,9 @@ import java.io.Writer;
 
 public abstract class BaseServlet extends HttpServlet {
 
-    protected boolean baseServletInitialized;
-    protected Gson gson;
-    protected VerifiedRequestDataProvider verifiedRequestData;
+    protected static boolean baseServletInitialized;
+    protected static Gson gson;
+    protected static VerifiedRequestDataProvider verifiedRequestData;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
