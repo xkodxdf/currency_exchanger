@@ -37,6 +37,6 @@ public final class ExceptionConverter {
                 return new DataNotFoundException(e);
             }
         }
-        return new CurrencyExchangerException(e.getMessage(), e);
+        return new CurrencyExchangerException(e);
     }
 }
