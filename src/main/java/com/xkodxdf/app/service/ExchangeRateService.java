@@ -41,6 +41,5 @@ public class ExchangeRateService {
                 .map(ExchangeRateResponseDto::new)
                 .toList();
     }
-
 }
 

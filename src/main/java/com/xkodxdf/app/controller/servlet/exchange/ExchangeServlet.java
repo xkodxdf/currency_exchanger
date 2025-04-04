@@ -15,7 +15,7 @@ import java.io.IOException;
 @WebServlet("/exchange")
 public class ExchangeServlet extends BaseServlet {
 
-    private ExchangeService exchangeService;
+    private static ExchangeService exchangeService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -23,9 +23,7 @@ public class ExchangeServlet extends BaseServlet {
             super.init(config);
         }
         if (exchangeService == null) {
-            String exchangeServiceName = ExchangeService.class.getSimpleName();
-            Object attribute = config.getServletContext().getAttribute(exchangeServiceName);
-            exchangeService = (ExchangeService) attribute;
+            exchangeService = getAttributeFromContext(ExchangeService.class, config);
         }
     }
 

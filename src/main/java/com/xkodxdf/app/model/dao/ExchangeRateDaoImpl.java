@@ -1,102 +1,81 @@
 package com.xkodxdf.app.model.dao;
 
-import com.xkodxdf.app.ExceptionConverter;
 import com.xkodxdf.app.dto.ExchangeRateRequestDto;
 import com.xkodxdf.app.model.dao.interfaces.ExchangeRateDao;
 import com.xkodxdf.app.model.entity.CurrencyEntity;
 import com.xkodxdf.app.model.entity.ExchangeRateEntity;
 
-import javax.sql.DataSource;
 import java.math.BigDecimal;
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class ExchangeRateDaoImpl implements ExchangeRateDao<ExchangeRateRequestDto, ExchangeRateEntity> {
 
-    private final DataSource dataSource;
+    private final SqlHelper sqlHelper;
 
-    public ExchangeRateDaoImpl(DataSource dataSource) {
-        this.dataSource = dataSource;
+    public ExchangeRateDaoImpl(SqlHelper sqlHelper) {
+        this.sqlHelper = sqlHelper;
     }
 
     @Override
     public ExchangeRateEntity save(ExchangeRateRequestDto exchangeRateRequestDto) {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(
-                     ExchangeRateSqlQueries.SAVE, Statement.RETURN_GENERATED_KEYS)) {
+        return sqlHelper.executeStatement(ExchangeRateSqlQueries.SAVE, preparedStatement -> {
             preparedStatement.setString(1, exchangeRateRequestDto.baseCurrencyCode());
             preparedStatement.setString(2, exchangeRateRequestDto.targetCurrencyCode());
             BigDecimal rate = new BigDecimal(exchangeRateRequestDto.rate());
             preparedStatement.setBigDecimal(3, rate);
             preparedStatement.executeUpdate();
             return get(exchangeRateRequestDto);
-        } catch (Exception e) {
-            throw ExceptionConverter.toCurrencyExchangerException(e);
-        }
+        });
     }
 
     @Override
     public ExchangeRateEntity get(ExchangeRateRequestDto exchangeRateRequestDto) {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(
-                     ExchangeRateSqlQueries.GET)) {
+        return sqlHelper.executeStatement(ExchangeRateSqlQueries.GET, preparedStatement -> {
             preparedStatement.setString(1, exchangeRateRequestDto.baseCurrencyCode());
             preparedStatement.setString(2, exchangeRateRequestDto.targetCurrencyCode());
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
             return buildExchangeRateEntity(resultSet);
-        } catch (Exception e) {
-            throw ExceptionConverter.toCurrencyExchangerException(e);
-        }
+        });
     }
 
     @Override
     public Optional<ExchangeRateEntity> find(ExchangeRateRequestDto requestDto) {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(
-                     ExchangeRateSqlQueries.FIND)) {
+        return sqlHelper.executeStatement(ExchangeRateSqlQueries.FIND, preparedStatement -> {
             preparedStatement.setString(1, requestDto.baseCurrencyCode());
             preparedStatement.setString(2, requestDto.targetCurrencyCode());
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
             return Optional.of(buildExchangeRateEntity(resultSet));
-        } catch (Exception e) {
-            return Optional.empty();
-        }
+        });
     }
 
     @Override
     public ExchangeRateEntity update(ExchangeRateRequestDto exchangeRateRequestDto) {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(
-                     ExchangeRateSqlQueries.UPDATE)) {
+        return sqlHelper.executeStatement(ExchangeRateSqlQueries.UPDATE, preparedStatement -> {
             BigDecimal newRate = new BigDecimal(exchangeRateRequestDto.rate());
             preparedStatement.setBigDecimal(1, newRate);
             preparedStatement.setString(2, exchangeRateRequestDto.baseCurrencyCode());
             preparedStatement.setString(3, exchangeRateRequestDto.targetCurrencyCode());
             preparedStatement.executeUpdate();
             return get(exchangeRateRequestDto);
-        } catch (SQLException e) {
-            throw ExceptionConverter.toCurrencyExchangerException(e);
-        }
+        });
     }
 
     @Override
     public List<ExchangeRateEntity> getAll() {
-        List<ExchangeRateEntity> exchangeRates = new ArrayList<>();
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(
-                     ExchangeRateSqlQueries.GET_ALL)) {
+        return sqlHelper.executeStatement(ExchangeRateSqlQueries.GET_ALL, preparedStatement -> {
             ResultSet resultSet = preparedStatement.executeQuery();
+            List<ExchangeRateEntity> exchangeRates = new ArrayList<>();
             while (resultSet.next()) {
                 exchangeRates.add(buildExchangeRateEntity(resultSet));
             }
-        } catch (Exception e) {
-            throw ExceptionConverter.toCurrencyExchangerException(e);
-        }
-        return exchangeRates;
+            return exchangeRates;
+        });
     }
 
 

@@ -30,7 +30,6 @@ public class ExchangeService {
         return new ExchangeResponseDto(exchangeEntity);
     }
 
-
     private ExchangeRateEntity findExchangeRate(ExchangeRateRequestDto requestDto) {
         return exchangeRateDao.find(requestDto)
                 .orElseThrow(() -> new DataNotFoundException(ErrorMessage.NOT_FOUND_ERR));

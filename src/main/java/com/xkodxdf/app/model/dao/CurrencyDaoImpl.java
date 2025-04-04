@@ -1,13 +1,13 @@
 package com.xkodxdf.app.model.dao;
 
 
-import com.xkodxdf.app.ExceptionConverter;
 import com.xkodxdf.app.dto.CurrencyRequestDto;
 import com.xkodxdf.app.model.dao.interfaces.CurrencyDao;
 import com.xkodxdf.app.model.entity.CurrencyEntity;
 
-import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,28 +18,25 @@ public class CurrencyDaoImpl implements CurrencyDao<CurrencyRequestDto, Currency
     private static final String CODE_COLUMN_LABEL = "code";
     private static final String NAME_COLUMN_LABEL = "full_name";
 
-    private final DataSource dataSource;
+    private final SqlHelper sqlHelper;
 
-    public CurrencyDaoImpl(DataSource dataSource) {
-        this.dataSource = dataSource;
+    public CurrencyDaoImpl(SqlHelper sqlHelper) {
+        this.sqlHelper = sqlHelper;
     }
 
     @Override
     public CurrencyEntity save(CurrencyRequestDto requestDto) {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(
-                     CurrencySqlQueries.SAVE, Statement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setString(1, requestDto.sign());
-            preparedStatement.setString(2, requestDto.code());
-            preparedStatement.setString(3, requestDto.name());
-            preparedStatement.executeUpdate();
-            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-            generatedKeys.next();
-            long currencyId = generatedKeys.getLong(ID_COLUMN_LABEL);
-            return new CurrencyEntity(currencyId, requestDto);
-        } catch (Exception e) {
-            throw ExceptionConverter.toCurrencyExchangerException(e);
-        }
+        return sqlHelper.executeStatement(CurrencySqlQueries.SAVE, Statement.RETURN_GENERATED_KEYS,
+                preparedStatement -> {
+                    preparedStatement.setString(1, requestDto.sign());
+                    preparedStatement.setString(2, requestDto.code());
+                    preparedStatement.setString(3, requestDto.name());
+                    preparedStatement.executeUpdate();
+                    ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+                    generatedKeys.next();
+                    long currencyId = generatedKeys.getLong(ID_COLUMN_LABEL);
+                    return new CurrencyEntity(currencyId, requestDto);
+                });
     }
 
     @Override
@@ -54,17 +51,23 @@ public class CurrencyDaoImpl implements CurrencyDao<CurrencyRequestDto, Currency
 
     @Override
     public List<CurrencyEntity> getAll() {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(CurrencySqlQueries.GET_ALL)) {
+        return sqlHelper.executeStatement(CurrencySqlQueries.GET_ALL, preparedStatement -> {
             ResultSet resultSet = preparedStatement.executeQuery();
             List<CurrencyEntity> currencies = new ArrayList<>();
             while (resultSet.next()) {
                 currencies.add(buildCurrency(resultSet));
             }
             return currencies;
-        } catch (Exception e) {
-            throw ExceptionConverter.toCurrencyExchangerException(e);
-        }
+        });
+    }
+
+    private CurrencyEntity getCurrencyEntity(CurrencyRequestDto requestDto, String sql) {
+        return sqlHelper.executeStatement(sql, preparedStatement -> {
+            preparedStatement.setString(1, requestDto.code());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            return buildCurrency(resultSet);
+        });
     }
 
     private CurrencyEntity buildCurrency(ResultSet resultSet) throws SQLException {
@@ -74,17 +77,5 @@ public class CurrencyDaoImpl implements CurrencyDao<CurrencyRequestDto, Currency
                 resultSet.getString(CODE_COLUMN_LABEL),
                 resultSet.getString(SIGN_COLUMN_LABEL)
         );
-    }
-
-    private CurrencyEntity getCurrencyEntity(CurrencyRequestDto requestDto, String sql) {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setString(1, requestDto.code());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            resultSet.next();
-            return buildCurrency(resultSet);
-        } catch (Exception e) {
-            throw ExceptionConverter.toCurrencyExchangerException(e);
-        }
     }
 }

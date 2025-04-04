@@ -15,9 +15,7 @@ public abstract class BaseExchangeRateServlet extends BaseServlet {
             super.init(config);
         }
         if (exchangeRateService == null) {
-            String exchangeRateServiceName = ExchangeRateService.class.getSimpleName();
-            Object attribute = config.getServletContext().getAttribute(exchangeRateServiceName);
-            exchangeRateService = (ExchangeRateService) attribute;
+            exchangeRateService = getAttributeFromContext(ExchangeRateService.class, config);
         }
     }
 }

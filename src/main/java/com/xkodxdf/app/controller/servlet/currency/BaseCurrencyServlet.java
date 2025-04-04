@@ -7,7 +7,7 @@ import jakarta.servlet.ServletException;
 
 public abstract class BaseCurrencyServlet extends BaseServlet {
 
-    protected CurrencyService currencyService;
+    protected static CurrencyService currencyService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -15,9 +15,7 @@ public abstract class BaseCurrencyServlet extends BaseServlet {
             super.init(config);
         }
         if (currencyService == null) {
-            String currencyServiceName = CurrencyService.class.getSimpleName();
-            Object attribute = config.getServletContext().getAttribute(currencyServiceName);
-            currencyService = (CurrencyService) attribute;
+            currencyService = getAttributeFromContext(CurrencyService.class, config);
         }
     }
 }

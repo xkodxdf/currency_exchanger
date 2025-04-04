@@ -29,7 +29,7 @@ public abstract class BaseServlet extends HttpServlet {
         writer.write(gson.toJson(objectToWrite));
     }
 
-    private <T> T getAttributeFromContext(Class<T> clazz, ServletConfig config) {
+    protected <T> T getAttributeFromContext(Class<T> clazz, ServletConfig config) {
         String className = clazz.getSimpleName();
         Object attribute = config.getServletContext().getAttribute(className);
         return clazz.cast(attribute);
