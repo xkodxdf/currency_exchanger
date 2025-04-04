@@ -33,7 +33,7 @@ public record ExchangeEntity(
     }
 
     private static BigDecimal exchangeCurrency(BigDecimal rate, BigDecimal amount) {
-        int numsAfterDecimal = 6;
+        int numsAfterDecimal = 12;
         return rate.multiply(amount).setScale(numsAfterDecimal, RoundingMode.HALF_EVEN);
     }
 }
