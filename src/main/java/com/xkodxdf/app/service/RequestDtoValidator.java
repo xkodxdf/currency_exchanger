@@ -55,7 +55,7 @@ public class RequestDtoValidator {
     private void validateNumericString(String numericString) {
         try {
             new BigDecimal(numericString);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             throw new InvalidRequestDataException(ErrorMessage.BIG_DECIMAL_CONVERSION_ERR);
         }
     }
