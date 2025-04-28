@@ -1,11 +1,9 @@
-package com.xkodxdf.app.controller.servlet.exchange;
+package com.xkodxdf.app.servlet;
 
-import com.xkodxdf.app.controller.servlet.BaseServlet;
 import com.xkodxdf.app.dto.ExchangeRequestDto;
 import com.xkodxdf.app.dto.ExchangeResponseDto;
 import com.xkodxdf.app.service.ExchangeService;
 import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,16 +13,12 @@ import java.io.IOException;
 @WebServlet("/exchange")
 public class ExchangeServlet extends BaseServlet {
 
-    private static ExchangeService exchangeService;
+    private ExchangeService exchangeService;
 
     @Override
-    public void init(ServletConfig config) throws ServletException {
-        if (!baseServletInitialized) {
-            super.init(config);
-        }
-        if (exchangeService == null) {
-            exchangeService = getAttributeFromContext(ExchangeService.class, config);
-        }
+    public void init(ServletConfig config) {
+        super.init(config);
+        exchangeService = getAttributeFromContext(ExchangeService.class, config);
     }
 
     @Override

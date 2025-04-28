@@ -1,4 +1,4 @@
-package com.xkodxdf.app.model.dao.interfaces;
+package com.xkodxdf.app.dao;
 
 import java.util.List;
 

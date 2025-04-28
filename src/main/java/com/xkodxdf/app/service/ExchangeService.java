@@ -5,9 +5,9 @@ import com.xkodxdf.app.dto.ExchangeRateRequestDto;
 import com.xkodxdf.app.dto.ExchangeRequestDto;
 import com.xkodxdf.app.dto.ExchangeResponseDto;
 import com.xkodxdf.app.exception.DataNotFoundException;
-import com.xkodxdf.app.model.dao.interfaces.ExchangeRateDao;
-import com.xkodxdf.app.model.entity.ExchangeEntity;
-import com.xkodxdf.app.model.entity.ExchangeRateEntity;
+import com.xkodxdf.app.dao.ExchangeRateDao;
+import com.xkodxdf.app.entity.ExchangeEntity;
+import com.xkodxdf.app.entity.ExchangeRateEntity;
 
 import java.math.BigDecimal;
 

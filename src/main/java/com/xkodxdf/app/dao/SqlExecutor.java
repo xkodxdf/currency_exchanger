@@ -1,4 +1,4 @@
-package com.xkodxdf.app.model.dao;
+package com.xkodxdf.app.dao;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

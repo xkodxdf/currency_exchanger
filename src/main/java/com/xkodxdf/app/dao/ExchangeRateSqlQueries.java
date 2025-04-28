@@ -1,4 +1,4 @@
-package com.xkodxdf.app.model.dao;
+package com.xkodxdf.app.dao;
 
 public final class ExchangeRateSqlQueries {
 

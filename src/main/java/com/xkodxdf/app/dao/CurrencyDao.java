@@ -1,4 +1,4 @@
-package com.xkodxdf.app.model.dao.interfaces;
+package com.xkodxdf.app.dao;
 
 public interface CurrencyDao<K, V> extends ExchangerDao<K, V> {
 

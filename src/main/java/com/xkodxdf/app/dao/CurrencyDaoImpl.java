@@ -1,9 +1,8 @@
-package com.xkodxdf.app.model.dao;
+package com.xkodxdf.app.dao;
 
 
 import com.xkodxdf.app.dto.CurrencyRequestDto;
-import com.xkodxdf.app.model.dao.interfaces.CurrencyDao;
-import com.xkodxdf.app.model.entity.CurrencyEntity;
+import com.xkodxdf.app.entity.CurrencyEntity;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

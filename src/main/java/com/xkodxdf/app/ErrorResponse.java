@@ -1,4 +1,4 @@
-package com.xkodxdf.app.controller;
+package com.xkodxdf.app;
 
 public class ErrorResponse {
 

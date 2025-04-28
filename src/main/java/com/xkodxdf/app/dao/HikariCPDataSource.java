@@ -1,4 +1,4 @@
-package com.xkodxdf.app.model.dao;
+package com.xkodxdf.app.dao;
 
 import com.xkodxdf.app.exception.CurrencyExchangerException;
 import com.zaxxer.hikari.HikariConfig;

@@ -1,7 +1,6 @@
-package com.xkodxdf.app.controller;
+package com.xkodxdf.app;
 
 import com.google.gson.Gson;
-import com.xkodxdf.app.ExceptionConverter;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletResponse;

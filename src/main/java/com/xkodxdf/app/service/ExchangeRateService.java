@@ -1,9 +1,9 @@
 package com.xkodxdf.app.service;
 
-import com.xkodxdf.app.model.dao.interfaces.ExchangeRateDao;
+import com.xkodxdf.app.dao.ExchangeRateDao;
 import com.xkodxdf.app.dto.ExchangeRateRequestDto;
 import com.xkodxdf.app.dto.ExchangeRateResponseDto;
-import com.xkodxdf.app.model.entity.ExchangeRateEntity;
+import com.xkodxdf.app.entity.ExchangeRateEntity;
 
 import java.util.List;
 

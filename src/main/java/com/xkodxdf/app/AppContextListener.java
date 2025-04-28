@@ -1,11 +1,11 @@
-package com.xkodxdf.app.controller;
+package com.xkodxdf.app;
 
 import com.google.gson.Gson;
 import com.xkodxdf.app.exception.CurrencyExchangerException;
-import com.xkodxdf.app.model.dao.CurrencyDaoImpl;
-import com.xkodxdf.app.model.dao.ExchangeRateDaoImpl;
-import com.xkodxdf.app.model.dao.HikariCPDataSource;
-import com.xkodxdf.app.model.dao.SqlHelper;
+import com.xkodxdf.app.dao.CurrencyDaoImpl;
+import com.xkodxdf.app.dao.ExchangeRateDaoImpl;
+import com.xkodxdf.app.dao.HikariCPDataSource;
+import com.xkodxdf.app.dao.SqlHelper;
 import com.xkodxdf.app.service.CurrencyService;
 import com.xkodxdf.app.service.ExchangeRateService;
 import com.xkodxdf.app.service.ExchangeService;

@@ -1,6 +1,6 @@
 package com.xkodxdf.app.dto;
 
-import com.xkodxdf.app.model.entity.CurrencyEntity;
+import com.xkodxdf.app.entity.CurrencyEntity;
 
 public record CurrencyResponseDto(
         Long id,

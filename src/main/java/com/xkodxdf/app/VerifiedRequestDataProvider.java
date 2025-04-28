@@ -1,6 +1,5 @@
-package com.xkodxdf.app.controller;
+package com.xkodxdf.app;
 
-import com.xkodxdf.app.ErrorMessage;
 import com.xkodxdf.app.dto.CurrencyRequestDto;
 import com.xkodxdf.app.dto.ExchangeRateRequestDto;
 import com.xkodxdf.app.dto.ExchangeRequestDto;

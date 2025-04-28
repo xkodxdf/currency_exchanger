@@ -1,7 +1,7 @@
 package com.xkodxdf.app.dto;
 
-import com.xkodxdf.app.model.entity.CurrencyEntity;
-import com.xkodxdf.app.model.entity.ExchangeRateEntity;
+import com.xkodxdf.app.entity.CurrencyEntity;
+import com.xkodxdf.app.entity.ExchangeRateEntity;
 
 import java.math.BigDecimal;
 

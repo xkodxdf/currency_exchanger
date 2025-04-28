@@ -1,6 +1,5 @@
 package com.xkodxdf.app;
 
-import com.xkodxdf.app.controller.ErrorResponse;
 import com.xkodxdf.app.exception.*;
 import jakarta.servlet.http.HttpServletResponse;
 import org.postgresql.util.PSQLException;

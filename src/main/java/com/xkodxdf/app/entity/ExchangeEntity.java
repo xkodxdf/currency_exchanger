@@ -1,4 +1,4 @@
-package com.xkodxdf.app.model.entity;
+package com.xkodxdf.app.entity;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

@@ -1,9 +1,8 @@
-package com.xkodxdf.app.model.dao;
+package com.xkodxdf.app.dao;
 
 import com.xkodxdf.app.dto.ExchangeRateRequestDto;
-import com.xkodxdf.app.model.dao.interfaces.ExchangeRateDao;
-import com.xkodxdf.app.model.entity.CurrencyEntity;
-import com.xkodxdf.app.model.entity.ExchangeRateEntity;
+import com.xkodxdf.app.entity.CurrencyEntity;
+import com.xkodxdf.app.entity.ExchangeRateEntity;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;

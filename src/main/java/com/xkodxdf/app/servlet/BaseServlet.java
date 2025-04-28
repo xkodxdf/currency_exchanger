@@ -1,9 +1,8 @@
-package com.xkodxdf.app.controller.servlet;
+package com.xkodxdf.app.servlet;
 
 import com.google.gson.Gson;
-import com.xkodxdf.app.controller.VerifiedRequestDataProvider;
+import com.xkodxdf.app.VerifiedRequestDataProvider;
 import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -12,13 +11,11 @@ import java.io.Writer;
 
 public abstract class BaseServlet extends HttpServlet {
 
-    protected static boolean baseServletInitialized;
-    protected static Gson gson;
-    protected static VerifiedRequestDataProvider verifiedRequestData;
+    protected Gson gson;
+    protected VerifiedRequestDataProvider verifiedRequestData;
 
     @Override
-    public void init(ServletConfig config) throws ServletException {
-        baseServletInitialized = true;
+    public void init(ServletConfig config) {
         gson = getAttributeFromContext(Gson.class, config);
         verifiedRequestData = getAttributeFromContext(VerifiedRequestDataProvider.class, config);
     }
